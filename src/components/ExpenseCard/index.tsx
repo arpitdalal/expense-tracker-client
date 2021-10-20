@@ -1,4 +1,4 @@
-import { useState, MouseEvent, useContext } from "react";
+import { useState, MouseEvent } from "react";
 import { MoreVert, Edit, Delete } from "@mui/icons-material";
 import {
   Card,
@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 
-import { AppContext, ContextType } from "../../context/appContext";
+// import { AppContext, ContextType } from "../../context/appContext";
 import Puller from "../Puller";
 import DrawerForm from "../DrawerForm";
 
@@ -27,11 +27,11 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
   const [isActionsMenuOpen, setIsActionsMenuOpen] =
     useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  const [selectedExpense, setSelectedExpense] = useState<string>("");
+  // const [selectedExpense, setSelectedExpense] = useState<string>("");
 
-  const { selectedMonthYear, monthYears } = useContext(
-    AppContext
-  ) as ContextType;
+  // const { selectedMonthYear, monthYears } = useContext(
+  //   AppContext
+  // ) as ContextType;
 
   const open = Boolean(isActionsMenuOpen);
 
