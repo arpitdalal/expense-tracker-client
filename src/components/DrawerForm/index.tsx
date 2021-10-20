@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback } from "react";
 import { Button, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import { Send } from "@mui/icons-material";
@@ -27,38 +27,42 @@ const DrawerForm = ({ title, expense, idx, action }: Props) => {
     AppContext
   ) as ContextType;
 
-  const handleFormSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
-    e.preventDefault();
-    switch (action) {
-      case "update": {
-        await fetch(
-          `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_PATH}sheets/${process.env.REACT_APP_GOOGLE_SHEETS_ID}`,
-          {
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            method: "PATCH",
-            body: JSON.stringify({
-              id: idx,
-              title: formData.title,
-              expense: formData.expense,
-              resSheetName: monthYears && monthYears[selectedMonthYear],
-            }),
-          }
-        )
-          .then((data) => console.log(data))
-          .catch((err) => console.log(err));
-        break;
+  const handleFormSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+      e.preventDefault();
+      switch (action) {
+        case "update": {
+          await fetch(
+            `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_PATH}sheets/${process.env.REACT_APP_GOOGLE_SHEETS_ID}`,
+            {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              method: "PATCH",
+              body: JSON.stringify({
+                id: idx,
+                title: formData.title,
+                expense: formData.expense,
+                resSheetName: monthYears && monthYears[selectedMonthYear],
+              }),
+            }
+          )
+            .then((data) => console.log(data))
+            .catch((err) => console.log(err));
+          break;
+        }
       }
-    }
-  };
+    },
+    [action, formData, idx, monthYears, selectedMonthYear]
+  );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>): void => {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    },
+    [formData]
+  );
 
   return (
     <Box

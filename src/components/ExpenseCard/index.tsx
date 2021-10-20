@@ -1,4 +1,4 @@
-import { useState, MouseEvent } from "react";
+import { useState, MouseEvent, useCallback } from "react";
 import { MoreVert, Edit, Delete } from "@mui/icons-material";
 import {
   Card,
@@ -35,21 +35,27 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
 
   const open = Boolean(isActionsMenuOpen);
 
-  const handleClick = (event: MouseEvent<HTMLElement>) => {
-    setIsActionsMenuOpen(event.currentTarget);
-  };
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLElement>) => {
+      setIsActionsMenuOpen(event.currentTarget);
+    },
+    [setIsActionsMenuOpen]
+  );
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsActionsMenuOpen(null);
-  };
+  }, [setIsActionsMenuOpen]);
 
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setDrawerOpen(newOpen);
-  };
+  const toggleDrawer = useCallback(
+    (newOpen: boolean) => () => {
+      setDrawerOpen(newOpen);
+    },
+    [setDrawerOpen]
+  );
 
-  const deleteClick = () => {
+  const deleteClick = useCallback(() => {
     console.log("Delete Clicked");
-  };
+  }, []);
 
   return (
     <>
