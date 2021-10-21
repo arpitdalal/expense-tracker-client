@@ -3,6 +3,7 @@ import { ChevronRight } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 
 import { AppContext, ContextType } from "../../context/appContext";
+import { isNextMonthYear } from "../../utils";
 
 const NextBtn = () => {
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
@@ -11,7 +12,7 @@ const NextBtn = () => {
   ) as ContextType;
 
   useEffect(() => {
-    if (monthYears && monthYears[selectedMonthYear + 1] === undefined) {
+    if (!isNextMonthYear(monthYears, selectedMonthYear)) {
       setIsDisabled(true);
     } else {
       setIsDisabled(false);
