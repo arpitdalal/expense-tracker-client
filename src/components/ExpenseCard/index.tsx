@@ -4,18 +4,20 @@ import {
   Card,
   CardContent,
   Container,
+  Fab,
   Grid,
   IconButton,
   Menu,
   MenuItem,
   SwipeableDrawer,
   Typography,
+  Zoom,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import AddIcon from "@mui/icons-material/Add";
 
-// import { AppContext, ContextType } from "../../context/appContext";
 import Puller from "../Puller";
-import DrawerForm from "../DrawerForm";
+import DrawerForm, { Action } from "../DrawerForm";
 
 type Props = {
   title: string;
@@ -27,11 +29,7 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
   const [isActionsMenuOpen, setIsActionsMenuOpen] =
     useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  // const [selectedExpense, setSelectedExpense] = useState<string>("");
-
-  // const { selectedMonthYear, monthYears } = useContext(
-  //   AppContext
-  // ) as ContextType;
+  const [action, setAction] = useState<Action>("");
 
   const open = Boolean(isActionsMenuOpen);
 
@@ -47,15 +45,12 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
   }, [setIsActionsMenuOpen]);
 
   const toggleDrawer = useCallback(
-    (newOpen: boolean) => () => {
+    (newOpen: boolean, action?: Action) => () => {
       setDrawerOpen(newOpen);
+      action && setAction(action);
     },
     [setDrawerOpen]
   );
-
-  const deleteClick = useCallback(() => {
-    console.log("Delete Clicked");
-  }, []);
 
   return (
     <>
@@ -89,13 +84,13 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
                 onClose={handleClose}
                 onClick={handleClose}
               >
-                <MenuItem onClick={toggleDrawer(true)}>
+                <MenuItem onClick={toggleDrawer(true, "update")}>
                   <Edit />
                   <Typography marginLeft='0.4rem' variant='body1'>
                     Edit
                   </Typography>
                 </MenuItem>
-                <MenuItem onClick={deleteClick}>
+                <MenuItem onClick={toggleDrawer(true, "delete")}>
                   <Delete color='error' />
                   <Typography marginLeft='0.4rem' color='error'>
                     Delete
@@ -129,11 +124,25 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
               title={title}
               idx={idx}
               expense={expense}
-              action='update'
+              action={action}
             />
           </Box>
         </Container>
       </SwipeableDrawer>
+
+      <Zoom in={true} style={{ transitionDelay: "1000ms" }}>
+        <Fab
+          color='secondary'
+          sx={{
+            position: "fixed",
+            bottom: (theme) => theme.spacing(2),
+            right: (theme) => theme.spacing(2),
+          }}
+          onClick={toggleDrawer(true, "create")}
+        >
+          <AddIcon />
+        </Fab>
+      </Zoom>
     </>
   );
 };
