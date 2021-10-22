@@ -1,53 +1,90 @@
 import { useEffect, useContext } from "react";
-import { Container } from "@mui/material";
+import { Container, Collapse } from "@mui/material";
 import { Box } from "@mui/system";
-import useGoogleSheets from "use-google-sheets";
+import { TransitionGroup } from "react-transition-group";
 
 import { AppContext, ContextType } from "./context/appContext";
 import Carousel from "./components/Carousel";
 import Header from "./components/Header";
 import ExpenseCard from "./components/ExpenseCard";
+import Drawer from "./components/Drawer";
+import AnimatedFab from "./components/AnimatedFab";
+import DialogBox from "./components/DialogBox";
+import Alert from "./components/Alert";
+import CircularPageLoading from "./components/CircularPageLoading";
+import Total from "./components/Total";
+import AnimatedSkeleton from "./components/Skeleton";
+import ErrorAlert from "./components/ErrorAlert";
+import { roundNumber } from "./utils";
 
 const App = () => {
-  const { selectedMonthYear, setSelectedMonthYear, monthYears, setMonthYears } =
-    useContext(AppContext) as ContextType;
-
-  const apiKey = process.env.REACT_APP_GOOGLE_API_KEY as string;
-  const sheetId = process.env.REACT_APP_GOOGLE_SHEETS_ID as string;
-  const { data, loading, error } = useGoogleSheets({
-    apiKey,
-    sheetId,
-  });
+  const {
+    selectedMonthYear,
+    setSelectedMonthYear,
+    monthYears,
+    setMonthYears,
+    data,
+    loading,
+    error,
+    action,
+    severity,
+    message,
+    isFetchLoading,
+    setTotal,
+  } = useContext(AppContext) as ContextType;
 
   useEffect(() => {
-    const dataMonthYears = data.map((dataMonthYear) => dataMonthYear.id);
+    if (!data) return;
+    const dataMonthYears = data.map((sheet) => sheet.id.replace("-", " "));
+    const arrayOfArrayOfNumbers = data.map((sheet) =>
+      sheet.data.map((row: any) => parseFloat(row.Expense))
+    );
+    const arrayOfTotal = arrayOfArrayOfNumbers.map((row) =>
+      row.reduce((a, b) => roundNumber(a + b), 0)
+    );
+
+    setTotal(arrayOfTotal);
     setMonthYears(dataMonthYears);
     setSelectedMonthYear(dataMonthYears.length - 1);
-  }, [data, setMonthYears, setSelectedMonthYear]);
+  }, [data, setMonthYears, setSelectedMonthYear, setTotal]);
 
   return (
-    <Container maxWidth='xl'>
-      <Header />
+    <>
+      {isFetchLoading && <CircularPageLoading />}
+      <Container maxWidth='xl'>
+        <Header />
 
-      {loading && "Skeleton"}
-      {error && "Error"}
-      {data && !loading && !error && (
-        <>
-          <Carousel>{monthYears && monthYears[selectedMonthYear]}</Carousel>
+        {loading && <AnimatedSkeleton />}
+        {error && <ErrorAlert />}
+        {data && !loading && !error && (
+          <>
+            <Carousel>{monthYears && monthYears[selectedMonthYear]}</Carousel>
 
-          <Box marginTop='2rem'>
-            {data[selectedMonthYear].data.map((dataExpense: any, idx) => (
-              <ExpenseCard
-                title={dataExpense.Title}
-                expense={dataExpense.Expense}
-                key={dataExpense.Title}
-                idx={idx}
-              />
-            ))}
-          </Box>
-        </>
-      )}
-    </Container>
+            <Box marginTop='2rem'>
+              <TransitionGroup>
+                {data[selectedMonthYear].data.map((dataExpense: any, idx) => (
+                  <Collapse in={true} key={`${dataExpense.Title}-${idx}`}>
+                    <Box>
+                      <ExpenseCard
+                        title={dataExpense.Title}
+                        expense={dataExpense.Expense}
+                        idx={idx}
+                      />
+                    </Box>
+                  </Collapse>
+                ))}
+              </TransitionGroup>
+            </Box>
+            <Total />
+            {action === "delete" ? <DialogBox /> : <Drawer />}
+
+            {severity !== "" && message !== "" && <Alert />}
+
+            <AnimatedFab />
+          </>
+        )}
+      </Container>
+    </>
   );
 };
 

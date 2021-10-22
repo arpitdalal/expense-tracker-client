@@ -1,68 +1,50 @@
-import { useState, useContext, useCallback } from "react";
-import { Button, TextField } from "@mui/material";
+import { useState, useContext, useCallback, useEffect } from "react";
+import { TextField } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { Box } from "@mui/system";
 import { Send } from "@mui/icons-material";
 
 import { AppContext, ContextType } from "../../context/appContext";
 
-type Props = {
-  title: string;
-  expense: string;
-  idx: number;
-  action: "update" | "create" | "delete";
-};
+export type Action = "update" | "create" | "delete" | "";
 
-type FormData = {
+export type FormData = {
   title: string;
   expense: string;
 };
 
-const DrawerForm = ({ title, expense, idx, action }: Props) => {
+const DrawerForm = () => {
   const [formData, setFormData] = useState<FormData>({
-    title,
-    expense,
+    title: "",
+    expense: "",
   });
 
-  const { monthYears, selectedMonthYear } = useContext(
-    AppContext
-  ) as ContextType;
+  const {
+    setExpenseData,
+    expenseData,
+    isDrawerFormSubmitBtnLoading,
+    handleAction,
+  } = useContext(AppContext) as ContextType;
 
   const handleFormSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-      e.preventDefault();
-      switch (action) {
-        case "update": {
-          await fetch(
-            `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_PATH}sheets/${process.env.REACT_APP_GOOGLE_SHEETS_ID}`,
-            {
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              method: "PATCH",
-              body: JSON.stringify({
-                id: idx,
-                title: formData.title,
-                expense: formData.expense,
-                resSheetName: monthYears && monthYears[selectedMonthYear],
-              }),
-            }
-          )
-            .then((data) => console.log(data))
-            .catch((err) => console.log(err));
-          break;
-        }
-      }
+    (e?: React.FormEvent<HTMLFormElement>): void => {
+      e && e.preventDefault();
+      handleAction(formData);
     },
-    [action, formData, idx, monthYears, selectedMonthYear]
+    [handleAction, formData]
   );
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>): void => {
+      setExpenseData({ ...expenseData, [e.target.name]: e.target.value });
       setFormData({ ...formData, [e.target.name]: e.target.value });
     },
-    [formData]
+    [formData, setFormData, expenseData, setExpenseData]
   );
+
+  useEffect(() => {
+    setFormData(expenseData);
+  }, [expenseData]);
 
   return (
     <Box
@@ -88,14 +70,16 @@ const DrawerForm = ({ title, expense, idx, action }: Props) => {
         onChange={handleChange}
       />
       <Box component='div'>
-        <Button
+        <LoadingButton
+          loading={isDrawerFormSubmitBtnLoading}
           type='submit'
           color='primary'
           variant='contained'
+          loadingPosition='end'
           endIcon={<Send />}
         >
           Submit
-        </Button>
+        </LoadingButton>
       </Box>
     </Box>
   );

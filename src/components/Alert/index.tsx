@@ -1,14 +1,9 @@
-import React, {
-  MouseEvent,
-  SyntheticEvent,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import { IconButton, Slide, SlideProps, Snackbar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Theme } from "@mui/system";
+import { AppContext, ContextType } from "../../context/appContext";
 
 export type Severity =
   | "snack-success"
@@ -17,18 +12,11 @@ export type Severity =
   | "snack-info"
   | "";
 
-type Props = {
-  severity: Severity;
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  message: string;
-};
-
-function SlideTransition(props: SlideProps) {
+export function SlideTransition(props: SlideProps) {
   return <Slide {...props} direction='right' />;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
+export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     success: {
       backgroundColor: theme.palette.success.main,
@@ -49,17 +37,21 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Alert = ({ severity, open, setOpen, message }: Props) => {
+const Alert = () => {
   const [className, setClassName] = useState<string>("");
+
+  const {
+    severity,
+    message,
+    setOpenAlert: setOpen,
+    openAlert: open,
+  } = useContext(AppContext) as ContextType;
 
   const classes = useStyles();
 
-  const handleClose = useCallback(
-    (event: SyntheticEvent | MouseEvent) => {
-      setOpen(false);
-    },
-    [setOpen]
-  );
+  const handleClose = useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
 
   useEffect(() => {
     switch (severity) {
@@ -86,16 +78,14 @@ const Alert = ({ severity, open, setOpen, message }: Props) => {
   }, [severity, setClassName, classes]);
 
   const action = (
-    <>
-      <IconButton
-        size='small'
-        aria-label='close'
-        color='inherit'
-        onClick={handleClose}
-      >
-        <CloseIcon fontSize='small' />
-      </IconButton>
-    </>
+    <IconButton
+      size='small'
+      aria-label='close'
+      color='inherit'
+      onClick={handleClose}
+    >
+      <CloseIcon fontSize='small' />
+    </IconButton>
   );
 
   return (
@@ -107,6 +97,7 @@ const Alert = ({ severity, open, setOpen, message }: Props) => {
       action={action}
       TransitionComponent={SlideTransition}
       ContentProps={{ className: className }}
+      sx={{ bottom: { xs: 90, sm: 24 } }}
     />
   );
 };
