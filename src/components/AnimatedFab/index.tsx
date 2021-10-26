@@ -5,13 +5,13 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { AppContext, ContextType } from "../../context/appContext";
 
 const AnimatedFab = () => {
-  const { toggleDrawer, setExpenseData } = useContext(
+  const { toggleDrawer, setExpenseData, selectedMonthYear } = useContext(
     AppContext
   ) as ContextType;
 
   useEffect(() => {
     setExpenseData({ title: "", expense: "" });
-  }, [setExpenseData]);
+  }, [setExpenseData, selectedMonthYear]);
 
   return (
     <Zoom in={true} style={{ transitionDelay: "1000ms" }}>
