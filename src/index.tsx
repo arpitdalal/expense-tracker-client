@@ -1,21 +1,39 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Container, CssBaseline, ThemeProvider } from "@mui/material";
 
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import theme from "./hooks/useStyles";
 import AppContextProvider from "./context/appContext";
+import Home from "./pages/Home";
+import Presets from "./pages/Presets";
+import Header from "./components/Header";
 
 ReactDOM.render(
   <React.StrictMode>
-    <AppContextProvider>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <App />
-      </ThemeProvider>
-    </AppContextProvider>
+    <Router>
+      <AppContextProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <App />
+          <Container maxWidth='xl'>
+            <Header />
+
+            <Switch>
+              <Route exact path='/'>
+                <Home />
+              </Route>
+              <Route path='/presets'>
+                <Presets />
+              </Route>
+            </Switch>
+          </Container>
+        </ThemeProvider>
+      </AppContextProvider>
+    </Router>
   </React.StrictMode>,
   document.getElementById("root")
 );
