@@ -1,10 +1,19 @@
 import { useState, useContext, useCallback, useEffect } from "react";
-import { TextField } from "@mui/material";
+import { useLocation } from "react-router-dom";
+import { Button, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { Box } from "@mui/system";
 import { Send } from "@mui/icons-material";
 
-import { AppContext, ContextType } from "../../context/appContext";
+import {
+  AppContext,
+  AppContextType,
+  ExpenseData,
+} from "../../context/appContext";
+import {
+  PresetsContext,
+  PresetsContextType,
+} from "../../context/presetsContext";
 
 export type Action = "update" | "create" | "delete" | "";
 
@@ -24,14 +33,22 @@ const DrawerForm = () => {
     expenseData,
     isDrawerFormSubmitBtnLoading,
     handleAction,
-  } = useContext(AppContext) as ContextType;
+  } = useContext(AppContext) as AppContextType;
+  const { handlePresetsAction, data, loading, error } = useContext(
+    PresetsContext
+  ) as PresetsContextType;
+
+  const { pathname } = useLocation();
 
   const handleFormSubmit = useCallback(
     (e?: React.FormEvent<HTMLFormElement>): void => {
       e && e.preventDefault();
+      pathname.includes("presets")
+        ? handlePresetsAction(formData)
+        : handleAction(formData);
       handleAction(formData);
     },
-    [handleAction, formData]
+    [handleAction, handlePresetsAction, formData, pathname]
   );
 
   const handleChange = useCallback(
@@ -42,48 +59,79 @@ const DrawerForm = () => {
     [formData, setFormData, expenseData, setExpenseData]
   );
 
+  const handleAddPreset = useCallback(
+    ({ title, expense }: ExpenseData): void => {
+      setFormData((prevFormData) => {
+        return { ...prevFormData, title, expense };
+      });
+    },
+    []
+  );
+
   useEffect(() => {
     setFormData(expenseData);
   }, [expenseData]);
 
   return (
-    <Box
-      component='form'
-      sx={{
-        "& > :not(style)": { m: 1 },
-      }}
-      marginTop='2rem'
-      noValidate
-      onSubmit={handleFormSubmit}
-      textAlign='center'
-    >
-      <TextField
-        label='Title'
-        value={formData.title}
-        name='title'
-        onChange={handleChange}
-      />
-      <TextField
-        label='Expense'
-        value={formData.expense}
-        name='expense'
-        onChange={handleChange}
-      />
-      <Box component='div'>
-        <LoadingButton
-          loading={isDrawerFormSubmitBtnLoading}
-          type='submit'
-          color='primary'
-          variant='contained'
-          loadingPosition='end'
-          endIcon={<Send />}
-        >
-          {expenseData.title === "" && expenseData.expense === ""
-            ? "Create"
-            : "Update"}
-        </LoadingButton>
+    <>
+      {!pathname.includes("presets") &&
+        !loading &&
+        !error &&
+        formData.title === "" &&
+        formData.expense === "" &&
+        data &&
+        data[0].data.map((preset: any, idx) => (
+          <Button
+            key={`${preset.Title}-${idx}`}
+            variant='outlined'
+            onClick={() => {
+              handleAddPreset({
+                title: preset.Title,
+                expense: preset.Expense,
+              });
+            }}
+          >
+            Add {preset.Title} preset
+          </Button>
+        ))}
+      <Box
+        component='form'
+        sx={{
+          "& > :not(style)": { m: 1 },
+        }}
+        marginTop='2rem'
+        noValidate
+        onSubmit={handleFormSubmit}
+        textAlign='center'
+      >
+        <TextField
+          label='Title'
+          value={formData.title}
+          name='title'
+          onChange={handleChange}
+        />
+        <TextField
+          label='Expense'
+          value={formData.expense}
+          name='expense'
+          onChange={handleChange}
+        />
+        <Box component='div'>
+          <LoadingButton
+            loading={isDrawerFormSubmitBtnLoading}
+            type='submit'
+            color='primary'
+            variant='contained'
+            loadingPosition='end'
+            endIcon={<Send />}
+          >
+            {expenseData.title === "" && expenseData.expense === ""
+              ? "Create"
+              : "Update"}
+          </LoadingButton>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

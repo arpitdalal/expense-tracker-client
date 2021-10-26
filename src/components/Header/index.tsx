@@ -1,17 +1,41 @@
-import { Toolbar, Typography } from "@mui/material";
+import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link, Toolbar, Typography } from "@mui/material";
+import { Box } from "@mui/system";
 
 const Header = () => {
+  const location = useLocation();
+
   return (
-    <Toolbar>
-      <Typography
-        marginTop='1.5rem'
-        width='100%'
-        textAlign='center'
-        variant='h3'
-        component='h1'
-      >
+    <Toolbar
+      sx={{
+        flexDirection: "column",
+      }}
+    >
+      <Typography marginTop='1.5rem' variant='h3' component='h1'>
         ExTrack
       </Typography>
+      <Box display='flex' gap='0.8rem' marginTop='0.8rem'>
+        <Link
+          component={RouterLink}
+          to='/'
+          underline={location && location.pathname === "/" ? "always" : "none"}
+          variant='body1'
+        >
+          Home
+        </Link>
+        <Link
+          component={RouterLink}
+          to='/presets'
+          underline={
+            location && location.pathname.includes("presets")
+              ? "always"
+              : "none"
+          }
+          variant='body1'
+        >
+          Presets
+        </Link>
+      </Box>
     </Toolbar>
   );
 };

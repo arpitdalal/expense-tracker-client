@@ -1,4 +1,5 @@
 import { useContext, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Dialog,
   DialogActions,
@@ -6,21 +7,30 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import { AppContext, ContextType } from "../../context/appContext";
+import { AppContext, AppContextType } from "../../context/appContext";
+import {
+  PresetsContext,
+  PresetsContextType,
+} from "../../context/presetsContext";
 
 const DialogBox = () => {
   const { toggleDialog, handleAction, openDialog } = useContext(
     AppContext
-  ) as ContextType;
+  ) as AppContextType;
+  const { handlePresetsAction } = useContext(
+    PresetsContext
+  ) as PresetsContextType;
+
+  const { pathname } = useLocation();
 
   const handleDialogClose = useCallback(() => {
     toggleDialog(false);
   }, [toggleDialog]);
 
   const handleDialogYesClick = useCallback(() => {
-    handleAction();
+    pathname.includes("presets") ? handlePresetsAction() : handleAction();
     toggleDialog(false);
-  }, [handleAction, toggleDialog]);
+  }, [handleAction, handlePresetsAction, toggleDialog, pathname]);
 
   return (
     <Dialog
