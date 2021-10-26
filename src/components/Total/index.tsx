@@ -1,10 +1,10 @@
 import { Box, Divider, Typography } from "@mui/material";
 import { useContext } from "react";
 
-import { AppContext, ContextType } from "../../context/appContext";
+import { AppContext, AppContextType } from "../../context/appContext";
 
 const Total = () => {
-  const { total, selectedMonthYear } = useContext(AppContext) as ContextType;
+  const { total, selectedMonthYear } = useContext(AppContext) as AppContextType;
 
   return (
     <Box maxWidth='sm' marginTop='1rem' marginRight='auto'>

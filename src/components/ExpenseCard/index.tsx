@@ -16,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { AppContext, ContextType } from "../../context/appContext";
+import { AppContext, AppContextType } from "../../context/appContext";
 import { Action } from "../DrawerForm";
 
 type Props = {
@@ -30,7 +30,7 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
     useState<null | HTMLElement>(null);
 
   const { toggleDrawer, setExpenseData, setExpenseIdx, toggleDialog } =
-    useContext(AppContext) as ContextType;
+    useContext(AppContext) as AppContextType;
 
   useEffect(() => {
     setExpenseData({ title, expense });

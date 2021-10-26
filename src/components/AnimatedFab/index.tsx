@@ -2,12 +2,12 @@ import { useContext, useEffect } from "react";
 import { Fab, Zoom } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 
-import { AppContext, ContextType } from "../../context/appContext";
+import { AppContext, AppContextType } from "../../context/appContext";
 
 const AnimatedFab = () => {
   const { toggleDrawer, setExpenseData, selectedMonthYear } = useContext(
     AppContext
-  ) as ContextType;
+  ) as AppContextType;
 
   useEffect(() => {
     setExpenseData({ title: "", expense: "" });

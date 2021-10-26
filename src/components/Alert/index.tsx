@@ -3,7 +3,7 @@ import { IconButton, Slide, SlideProps, Snackbar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Theme } from "@mui/system";
-import { AppContext, ContextType } from "../../context/appContext";
+import { AppContext, AppContextType } from "../../context/appContext";
 
 export type Severity =
   | "snack-success"
@@ -45,7 +45,7 @@ const Alert = () => {
     message,
     setOpenAlert: setOpen,
     openAlert: open,
-  } = useContext(AppContext) as ContextType;
+  } = useContext(AppContext) as AppContextType;
 
   const classes = useStyles();
 
