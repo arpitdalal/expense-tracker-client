@@ -19,20 +19,20 @@ export function SlideTransition(props: SlideProps) {
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     success: {
-      backgroundColor: theme.palette.success.main,
-      color: theme.palette.success.contrastText,
+      backgroundColor: `${theme.palette.success.main} !important`,
+      color: `${theme.palette.success.contrastText} !important`,
     },
     info: {
-      backgroundColor: theme.palette.info.main,
-      color: theme.palette.info.contrastText,
+      backgroundColor: `${theme.palette.info.main} !important`,
+      color: `${theme.palette.info.contrastText} !important`,
     },
     error: {
-      backgroundColor: theme.palette.error.main,
-      color: theme.palette.error.contrastText,
+      backgroundColor: `${theme.palette.error.main} !important`,
+      color: `${theme.palette.error.contrastText} !important`,
     },
     warning: {
-      backgroundColor: theme.palette.warning.main,
-      color: theme.palette.warning.contrastText,
+      backgroundColor: `${theme.palette.warning.main} !important`,
+      color: `${theme.palette.warning.contrastText} !important`,
     },
   })
 );
