@@ -78,7 +78,9 @@ const DrawerForm = () => {
           loadingPosition='end'
           endIcon={<Send />}
         >
-          Submit
+          {expenseData.title === "" && expenseData.expense === ""
+            ? "Create"
+            : "Update"}
         </LoadingButton>
       </Box>
     </Box>
