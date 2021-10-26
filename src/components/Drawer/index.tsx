@@ -4,12 +4,12 @@ import { Global } from "@emotion/react";
 
 import DrawerForm from "../DrawerForm";
 import Puller from "../Puller";
-import { AppContext, ContextType } from "../../context/appContext";
+import { AppContext, AppContextType } from "../../context/appContext";
 
 const Drawer = () => {
   const { drawerOpen, toggleDrawer, expenseData } = useContext(
     AppContext
-  ) as ContextType;
+  ) as AppContextType;
 
   let drawerBleeding = 25;
   process.env.REACT_APP_DRAWER_BLEEDING &&
@@ -39,11 +39,6 @@ const Drawer = () => {
             borderTopLeftRadius: 8,
             borderTopRightRadius: 8,
           },
-        }}
-        swipeAreaWidth={drawerBleeding}
-        disableSwipeToOpen={false}
-        ModalProps={{
-          keepMounted: true,
         }}
       >
         <Box
