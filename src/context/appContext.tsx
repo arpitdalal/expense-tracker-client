@@ -1,7 +1,9 @@
 import { createContext, useState, useCallback, useEffect } from "react";
+import { SwipeableHandlers, useSwipeable } from "react-swipeable";
 import { ErrorResponse, Sheet } from "use-google-sheets/dist/types";
-import { Severity } from "../components/Alert";
 
+import { isNextMonthYear, isPrevMonthYear } from "../utils";
+import { Severity } from "../components/Alert";
 import { Action, FormData } from "../components/DrawerForm";
 import useGoogleSheets from "../hooks/useGoogleSheets";
 
@@ -33,6 +35,7 @@ export type ContextType = {
   isFetchLoading: boolean;
   total: number[];
   setTotal: React.Dispatch<React.SetStateAction<number[]>>;
+  swiperHandlers: SwipeableHandlers;
 };
 
 export type ExpenseData = {
@@ -75,6 +78,21 @@ const AppContextProvider = (
   const setPrevMonthYear = useCallback(() => {
     setSelectedMonthYear(selectedMonthYear - 1);
   }, [setSelectedMonthYear, selectedMonthYear]);
+
+  const swipePrevMontYear = useCallback(() => {
+    isPrevMonthYear(monthYears, selectedMonthYear) === true &&
+      setPrevMonthYear();
+  }, [monthYears, selectedMonthYear, setPrevMonthYear]);
+
+  const swipeNextMontYear = useCallback(() => {
+    isNextMonthYear(monthYears, selectedMonthYear) === true &&
+      setNextMonthYear();
+  }, [monthYears, selectedMonthYear, setNextMonthYear]);
+
+  const swiperHandlers = useSwipeable({
+    onSwipedLeft: swipeNextMontYear,
+    onSwipedRight: swipePrevMontYear,
+  });
 
   const { googleData, googleLoading, googleError } = useGoogleSheets();
 
@@ -309,6 +327,7 @@ const AppContextProvider = (
         isFetchLoading,
         total,
         setTotal,
+        swiperHandlers,
       }}
       {...props}
     >
