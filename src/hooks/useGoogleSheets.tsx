@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useGoogleSheets from "use-google-sheets";
 import { ErrorResponse, Sheet } from "use-google-sheets/dist/types";
 
-const useGoogleSheetsFunc = () => {
+const useGoogleSheetsFunc = (sheetName?: string) => {
   const [googleData, setGoogleData] = useState<Sheet[] | null>(null);
   const [googleLoading, setGoogleLoading] = useState<boolean>(true);
   const [googleError, setGoogleError] = useState<ErrorResponse | null>(null);
@@ -13,6 +13,7 @@ const useGoogleSheetsFunc = () => {
   const { data, loading, error } = useGoogleSheets({
     apiKey,
     sheetId,
+    sheetsNames: sheetName ? [sheetName] : [],
   });
 
   useEffect(() => {
