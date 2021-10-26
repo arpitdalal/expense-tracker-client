@@ -1,7 +1,7 @@
 import { useEffect, useContext } from "react";
-import { Container, Collapse } from "@mui/material";
+import { Container } from "@mui/material";
 import { Box } from "@mui/system";
-import { TransitionGroup } from "react-transition-group";
+import { createStyles, makeStyles } from "@mui/styles";
 
 import { AppContext, ContextType } from "./context/appContext";
 import Carousel from "./components/Carousel";
@@ -17,6 +17,17 @@ import AnimatedSkeleton from "./components/Skeleton";
 import ErrorAlert from "./components/ErrorAlert";
 import { roundNumber } from "./utils";
 
+const useStyles = makeStyles(() =>
+  createStyles({
+    flexWrapper: {
+      display: "grid",
+      gap: "1rem",
+      gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+      gridAutoRows: "minmax(100px, auto)",
+    },
+  })
+);
+
 const App = () => {
   const {
     selectedMonthYear,
@@ -31,7 +42,10 @@ const App = () => {
     message,
     isFetchLoading,
     setTotal,
+    swiperHandlers,
   } = useContext(AppContext) as ContextType;
+
+  const classes = useStyles();
 
   useEffect(() => {
     if (!data) return;
@@ -59,23 +73,20 @@ const App = () => {
         {data && !loading && !error && (
           <>
             <Carousel>{monthYears && monthYears[selectedMonthYear]}</Carousel>
-
-            <Box marginTop='2rem'>
-              <TransitionGroup>
+            <Box {...swiperHandlers}>
+              <Box marginTop='2rem' className={classes.flexWrapper}>
                 {data[selectedMonthYear].data.map((dataExpense: any, idx) => (
-                  <Collapse in={true} key={`${dataExpense.Title}-${idx}`}>
-                    <Box>
-                      <ExpenseCard
-                        title={dataExpense.Title}
-                        expense={dataExpense.Expense}
-                        idx={idx}
-                      />
-                    </Box>
-                  </Collapse>
+                  <Box key={`${dataExpense.Title}-${idx}`}>
+                    <ExpenseCard
+                      title={dataExpense.Title}
+                      expense={dataExpense.Expense}
+                      idx={idx}
+                    />
+                  </Box>
                 ))}
-              </TransitionGroup>
+              </Box>
+              <Total />
             </Box>
-            <Total />
             {action === "delete" ? <DialogBox /> : <Drawer />}
 
             {severity !== "" && message !== "" && <Alert />}
