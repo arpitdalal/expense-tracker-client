@@ -18,8 +18,7 @@ ReactDOM.render(
       <AppContextProvider>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <App />
-          <Container maxWidth='xl'>
+          <Container maxWidth='xl' sx={{ py: "2rem" }}>
             <Header />
 
             <Switch>
@@ -31,6 +30,7 @@ ReactDOM.render(
               </Route>
             </Switch>
           </Container>
+          <App />
         </ThemeProvider>
       </AppContextProvider>
     </Router>
