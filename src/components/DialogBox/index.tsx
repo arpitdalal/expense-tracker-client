@@ -43,7 +43,7 @@ const DialogBox = () => {
         <Typography component='span' color='error'>
           delete
         </Typography>{" "}
-        this expense?
+        this {!pathname.includes("presets") ? "expense" : "preset"}?
       </DialogTitle>
       <DialogActions>
         <Button onClick={handleDialogClose} autoFocus>
