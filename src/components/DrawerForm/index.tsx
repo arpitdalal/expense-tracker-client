@@ -1,6 +1,6 @@
 import { useState, useContext, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Button, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { Box } from "@mui/system";
 import { Send } from "@mui/icons-material";
@@ -14,6 +14,7 @@ import {
   PresetsContext,
   PresetsContextType,
 } from "../../context/presetsContext";
+import Presets from "../Presets";
 
 export type Action = "update" | "create" | "delete" | "";
 
@@ -27,6 +28,7 @@ const DrawerForm = () => {
     title: "",
     expense: "",
   });
+  const [btnText, setBtnText] = useState<string>("Create");
 
   const {
     setExpenseData,
@@ -34,7 +36,7 @@ const DrawerForm = () => {
     isDrawerFormSubmitBtnLoading,
     handleAction,
   } = useContext(AppContext) as AppContextType;
-  const { handlePresetsAction, data, loading, error } = useContext(
+  const { handlePresetsAction } = useContext(
     PresetsContext
   ) as PresetsContextType;
 
@@ -61,12 +63,17 @@ const DrawerForm = () => {
 
   const handleAddPreset = useCallback(
     ({ title, expense }: ExpenseData): void => {
-      setFormData((prevFormData) => {
-        return { ...prevFormData, title, expense };
-      });
+      setExpenseData({ ...expenseData, title, expense });
+      setFormData({ ...formData, title, expense });
     },
-    []
+    [setFormData, formData, setExpenseData, expenseData]
   );
+
+  useEffect(() => {
+    expenseData.title !== "" &&
+      expenseData.expense !== "" &&
+      setBtnText("Update");
+  }, []);
 
   useEffect(() => {
     setFormData(expenseData);
@@ -74,26 +81,9 @@ const DrawerForm = () => {
 
   return (
     <>
-      {!pathname.includes("presets") &&
-        !loading &&
-        !error &&
-        formData.title === "" &&
-        formData.expense === "" &&
-        data &&
-        data[0].data.map((preset: any, idx) => (
-          <Button
-            key={`${preset.Title}-${idx}`}
-            variant='outlined'
-            onClick={() => {
-              handleAddPreset({
-                title: preset.Title,
-                expense: preset.Expense,
-              });
-            }}
-          >
-            Add {preset.Title} preset
-          </Button>
-        ))}
+      {!pathname.includes("presets") && (
+        <Presets handleAddPreset={handleAddPreset} formData={formData} />
+      )}
       <Box
         component='form'
         sx={{
@@ -125,9 +115,7 @@ const DrawerForm = () => {
             loadingPosition='end'
             endIcon={<Send />}
           >
-            {expenseData.title === "" && expenseData.expense === ""
-              ? "Create"
-              : "Update"}
+            {btnText}
           </LoadingButton>
         </Box>
       </Box>
