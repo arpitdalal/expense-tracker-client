@@ -11,7 +11,7 @@ const Header = () => {
         flexDirection: "column",
       }}
     >
-      <Typography marginTop='1.5rem' variant='h3' component='h1'>
+      <Typography variant='h3' component='h1'>
         ExTrack
       </Typography>
       <Box display='flex' gap='0.8rem' marginTop='0.8rem'>
