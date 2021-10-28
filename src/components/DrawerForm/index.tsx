@@ -43,12 +43,11 @@ const DrawerForm = () => {
   const { pathname } = useLocation();
 
   const handleFormSubmit = useCallback(
-    (e?: React.FormEvent<HTMLFormElement>): void => {
-      e && e.preventDefault();
+    (e: React.FormEvent<HTMLFormElement>): void => {
+      e.preventDefault();
       pathname.includes("presets")
         ? handlePresetsAction(formData)
         : handleAction(formData);
-      handleAction(formData);
     },
     [handleAction, handlePresetsAction, formData, pathname]
   );
@@ -61,7 +60,7 @@ const DrawerForm = () => {
     [formData, setFormData, expenseData, setExpenseData]
   );
 
-  const handleAddPreset = useCallback(
+  const handlePresetAction = useCallback(
     ({ title, expense }: ExpenseData): void => {
       setExpenseData({ ...expenseData, title, expense });
       setFormData({ ...formData, title, expense });
@@ -73,6 +72,7 @@ const DrawerForm = () => {
     expenseData.title !== "" &&
       expenseData.expense !== "" &&
       setBtnText("Update");
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const DrawerForm = () => {
   return (
     <>
       {!pathname.includes("presets") && (
-        <Presets handleAddPreset={handleAddPreset} formData={formData} />
+        <Presets handlePresetAction={handlePresetAction} />
       )}
       <Box
         component='form'

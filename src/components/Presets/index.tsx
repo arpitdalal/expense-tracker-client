@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { Button } from "@mui/material";
+import { Box } from "@mui/system";
 
 import {
   AppContext,
@@ -10,16 +10,15 @@ import {
   PresetsContext,
   PresetsContextType,
 } from "../../context/presetsContext";
-import { FormData } from "../DrawerForm";
-import { Box } from "@mui/system";
+import PresetBtn from "../PresetBtn";
 
 type Props = {
-  handleAddPreset: ({ title, expense }: ExpenseData) => void;
-  formData: FormData;
+  handlePresetAction: ({ title, expense }: ExpenseData) => void;
 };
 
-const Presets = ({ handleAddPreset, formData }: Props) => {
+const Presets = ({ handlePresetAction }: Props) => {
   const [shouldShow, setShouldShow] = useState<boolean>(false);
+
   const { data, loading, error } = useContext(
     PresetsContext
   ) as PresetsContextType;
@@ -29,27 +28,21 @@ const Presets = ({ handleAddPreset, formData }: Props) => {
     expenseData.title === "" &&
       expenseData.expense === "" &&
       setShouldShow(true);
+    // eslint-disable-next-line
   }, []);
 
   return (
-    <Box marginTop='1rem'>
+    <Box display='flex' flexDirection='row' flexWrap='wrap' marginTop='1rem'>
       {!loading &&
         !error &&
         shouldShow &&
         data &&
         data[0].data.map((preset: any, idx) => (
-          <Button
+          <PresetBtn
+            handlePresetAction={handlePresetAction}
             key={`${preset.Title}-${idx}`}
-            variant='outlined'
-            onClick={() => {
-              handleAddPreset({
-                title: preset.Title,
-                expense: preset.Expense,
-              });
-            }}
-          >
-            Add {preset.Title} preset
-          </Button>
+            preset={preset}
+          />
         ))}
     </Box>
   );

@@ -5,7 +5,13 @@ import {
   useContext,
   useEffect,
 } from "react";
-import { MoreVert, Edit, Delete } from "@mui/icons-material";
+import { useLocation } from "react-router-dom";
+import {
+  MoreVert,
+  EditRounded,
+  DeleteRounded,
+  AddCircleRounded,
+} from "@mui/icons-material";
 import {
   Card,
   CardContent,
@@ -17,6 +23,10 @@ import {
 } from "@mui/material";
 
 import { AppContext, AppContextType } from "../../context/appContext";
+import {
+  PresetsContext,
+  PresetsContextType,
+} from "../../context/presetsContext";
 import { Action } from "../DrawerForm";
 
 type Props = {
@@ -28,14 +38,25 @@ type Props = {
 const ExpenseCard = ({ title, expense, idx }: Props) => {
   const [isActionsMenuOpen, setIsActionsMenuOpen] =
     useState<null | HTMLElement>(null);
+  const [isAddPresetSet, setIsAddPresetSet] = useState<boolean>(false);
 
-  const { toggleDrawer, setExpenseData, setExpenseIdx, toggleDialog } =
-    useContext(AppContext) as AppContextType;
+  const {
+    toggleDrawer,
+    setExpenseData,
+    setExpenseIdx,
+    toggleDialog,
+    setAction,
+  } = useContext(AppContext) as AppContextType;
+  const { handlePresetsAction } = useContext(
+    PresetsContext
+  ) as PresetsContextType;
 
   useEffect(() => {
     setExpenseData({ title, expense });
     setExpenseIdx(idx);
   }, [title, expense, idx, setExpenseData, setExpenseIdx]);
+
+  const { pathname } = useLocation();
 
   const open = Boolean(isActionsMenuOpen);
 
@@ -66,6 +87,19 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
     },
     [toggleDialog, setExpenseIdx, idx]
   );
+
+  const handleAddPreset = useCallback(() => {
+    setAction("create");
+    setIsAddPresetSet(true);
+  }, [setIsAddPresetSet, setAction]);
+
+  useEffect(() => {
+    if (isAddPresetSet) {
+      handlePresetsAction({ title, expense });
+      setIsAddPresetSet(false);
+    }
+    // eslint-disable-next-line
+  }, [isAddPresetSet, setIsAddPresetSet]);
 
   return (
     <Card sx={{ mb: "1rem" }}>
@@ -98,12 +132,24 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
               onClose={handleClose}
               onClick={handleClose}
             >
+              {!pathname.includes("presets") && (
+                <MenuItem
+                  onClick={() => {
+                    handleAddPreset();
+                  }}
+                >
+                  <AddCircleRounded />
+                  <Typography marginLeft='0.4rem' variant='body1'>
+                    Add to Presets
+                  </Typography>
+                </MenuItem>
+              )}
               <MenuItem
                 onClick={() => {
                   handleEditClick(true, "update");
                 }}
               >
-                <Edit />
+                <EditRounded />
                 <Typography marginLeft='0.4rem' variant='body1'>
                   Edit
                 </Typography>
@@ -113,7 +159,7 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
                   handleDeleteClick(true);
                 }}
               >
-                <Delete color='error' />
+                <DeleteRounded color='error' />
                 <Typography marginLeft='0.4rem' color='error'>
                   Delete
                 </Typography>

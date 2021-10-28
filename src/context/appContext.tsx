@@ -17,6 +17,7 @@ export type AppContextType = {
   setPrevMonthYear: () => void;
   drawerOpen: boolean;
   action: Action;
+  setAction: React.Dispatch<React.SetStateAction<Action>>;
   expenseData: ExpenseData;
   setExpenseData: React.Dispatch<React.SetStateAction<ExpenseData>>;
   toggleDrawer: (newOpen: boolean, action?: Action) => void;
@@ -323,6 +324,7 @@ const AppContextProvider = (
         setNextMonthYear,
         setPrevMonthYear,
         action,
+        setAction,
         drawerOpen,
         expenseData,
         setExpenseData,
