@@ -1,34 +1,35 @@
 import { useState, useCallback } from "react";
 import { Button } from "@mui/material";
 
-import { ExpenseData } from "../../context/appContext";
+import { HandlePresetAction } from "../DrawerForm";
 
 type Props = {
-  handlePresetAction: ({ title, expense }: ExpenseData) => void;
+  handlePresetAction: HandlePresetAction;
   preset: any;
+  idx: number;
 };
 
-const PresetBtn = ({ handlePresetAction, preset }: Props) => {
+const PresetBtn = ({ handlePresetAction, preset, idx }: Props) => {
   const [isPresetAdded, setIsPresetAdded] = useState<boolean>(false);
 
-  const handleAddPresetBtnClick = useCallback(
-    (preset) => {
-      setIsPresetAdded(true);
-      handlePresetAction({
-        title: preset.Title,
-        expense: preset.Expense,
-      });
+  const handlePresetBtnClick = useCallback(
+    (action, newPreset) => {
+      if (action === "add") {
+        setIsPresetAdded(true);
+      } else {
+        setIsPresetAdded(false);
+      }
+      handlePresetAction(
+        action,
+        {
+          title: newPreset.Title,
+          expense: newPreset.Expense,
+        },
+        idx
+      );
     },
-    [handlePresetAction, setIsPresetAdded]
+    [handlePresetAction, setIsPresetAdded, idx]
   );
-
-  const handleRemovePresetBtnClick = useCallback(() => {
-    setIsPresetAdded(false);
-    handlePresetAction({
-      title: "",
-      expense: "",
-    });
-  }, [setIsPresetAdded, handlePresetAction]);
 
   return (
     <>
@@ -36,11 +37,12 @@ const PresetBtn = ({ handlePresetAction, preset }: Props) => {
         <Button
           variant='outlined'
           onClick={() => {
-            handleRemovePresetBtnClick();
+            handlePresetBtnClick("remove", { Title: "", Expense: "" });
           }}
           sx={{
             mx: "0.5rem",
           }}
+          disabled={preset.disabled}
         >
           Remove {preset.Title} preset
         </Button>
@@ -48,11 +50,12 @@ const PresetBtn = ({ handlePresetAction, preset }: Props) => {
         <Button
           variant='outlined'
           onClick={() => {
-            handleAddPresetBtnClick(preset);
+            handlePresetBtnClick("add", preset);
           }}
           sx={{
             mx: "0.5rem",
           }}
+          disabled={preset.disabled}
         >
           Add {preset.Title} preset
         </Button>

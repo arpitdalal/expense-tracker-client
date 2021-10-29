@@ -4,6 +4,7 @@ import { TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { Box } from "@mui/system";
 import { Send } from "@mui/icons-material";
+import { Sheet } from "use-google-sheets/dist/types";
 
 import {
   AppContext,
@@ -17,6 +18,12 @@ import {
 import Presets from "../Presets";
 
 export type Action = "update" | "create" | "delete" | "";
+export type PresetAction = "remove" | "add";
+export type HandlePresetAction = (
+  action: PresetAction,
+  { title, expense }: ExpenseData,
+  idx: number
+) => void;
 
 const DrawerForm = () => {
   const [formData, setFormData] = useState<ExpenseData>({
@@ -31,7 +38,7 @@ const DrawerForm = () => {
     isDrawerFormSubmitBtnLoading,
     handleAction,
   } = useContext(AppContext) as AppContextType;
-  const { handlePresetsAction } = useContext(
+  const { data, handlePresetsAction, setData } = useContext(
     PresetsContext
   ) as PresetsContextType;
 
@@ -56,11 +63,41 @@ const DrawerForm = () => {
   );
 
   const handlePresetAction = useCallback(
-    ({ title, expense }: ExpenseData): void => {
+    (
+      action: PresetAction,
+      { title, expense }: ExpenseData,
+      idx: number
+    ): void => {
       setExpenseData({ ...expenseData, title, expense });
       setFormData({ ...formData, title, expense });
+
+      let newData: Sheet[] | null = null;
+      if (action === "add") {
+        newData =
+          data &&
+          data.map((sheet) => {
+            let newSheet = sheet;
+            newSheet.data.map((expense: any, id) => {
+              if (id !== idx) expense.disabled = true;
+              return expense as Sheet;
+            });
+            return newSheet;
+          });
+      } else {
+        newData =
+          data &&
+          data.map((sheet) => {
+            let newSheet = sheet;
+            newSheet.data.map((expense: any) => {
+              expense.disabled = false;
+              return expense as Sheet;
+            });
+            return newSheet;
+          });
+      }
+      newData && setData(newData);
     },
-    [setFormData, formData, setExpenseData, expenseData]
+    [setFormData, formData, setExpenseData, expenseData, setData, data]
   );
 
   useEffect(() => {

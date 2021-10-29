@@ -1,19 +1,16 @@
 import { useContext, useState, useEffect } from "react";
 import { Box } from "@mui/system";
 
-import {
-  AppContext,
-  AppContextType,
-  ExpenseData,
-} from "../../context/appContext";
+import { AppContext, AppContextType } from "../../context/appContext";
 import {
   PresetsContext,
   PresetsContextType,
 } from "../../context/presetsContext";
 import PresetBtn from "../PresetBtn";
+import { HandlePresetAction } from "../DrawerForm";
 
 type Props = {
-  handlePresetAction: ({ title, expense }: ExpenseData) => void;
+  handlePresetAction: HandlePresetAction;
 };
 
 const Presets = ({ handlePresetAction }: Props) => {
@@ -31,23 +28,29 @@ const Presets = ({ handlePresetAction }: Props) => {
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
   return (
     <Box
       display='flex'
       flexDirection='row'
       flexWrap='wrap'
-      gap='1rem'
+      gap='0.5rem'
+      marginTop='1rem'
       justifyContent='center'
     >
       {!loading &&
         !error &&
         shouldShow &&
         data &&
-        data[0].data.map((preset: any, idx) => (
+        data[0].data.map((preset: any, idx: number) => (
           <PresetBtn
             handlePresetAction={handlePresetAction}
             key={`${preset.Title}-${idx}`}
             preset={preset}
+            idx={idx}
           />
         ))}
     </Box>

@@ -17,6 +17,7 @@ import {
 
 export type PresetsContextType = {
   data: Sheet[] | null;
+  setData: (data: Sheet[]) => void;
   loading: boolean;
   error: ErrorResponse | null;
   handlePresetsAction: (formData?: ExpenseData | undefined) => void;
@@ -203,14 +204,25 @@ const PresetsContextProvider = (
   );
 
   useEffect(() => {
-    setData(googleData);
+    const modifiedGoogleData =
+      googleData &&
+      googleData.map((sheet) => {
+        sheet.data = sheet.data.map((row) => {
+          return {
+            ...row,
+            disabled: false,
+          };
+        });
+        return sheet;
+      });
+    setData(modifiedGoogleData);
     setLoading(googleLoading);
     setError(googleError);
   }, [googleData, googleLoading, googleError]);
 
   return (
     <PresetsContext.Provider
-      value={{ data, loading, error, handlePresetsAction }}
+      value={{ data, setData, loading, error, handlePresetsAction }}
       {...props}
     >
       {props.children}
