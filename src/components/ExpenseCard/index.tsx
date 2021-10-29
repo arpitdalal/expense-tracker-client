@@ -98,8 +98,7 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
       handlePresetsAction({ title, expense });
       setIsAddPresetSet(false);
     }
-    // eslint-disable-next-line
-  }, [isAddPresetSet, setIsAddPresetSet]);
+  }, [isAddPresetSet, setIsAddPresetSet, handlePresetsAction, title, expense]);
 
   return (
     <Card sx={{ mb: "1rem" }}>

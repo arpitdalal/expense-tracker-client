@@ -100,12 +100,11 @@ const DrawerForm = () => {
     [setFormData, formData, setExpenseData, expenseData, setData, data]
   );
 
+  const btnTextBool = expenseData.title !== "" && expenseData.expense !== "";
+
   useEffect(() => {
-    expenseData.title !== "" &&
-      expenseData.expense !== "" &&
-      setBtnText("Update");
-    // eslint-disable-next-line
-  }, []);
+    btnTextBool && setBtnText("Update");
+  }, [btnTextBool]);
 
   useEffect(() => {
     setFormData(expenseData);

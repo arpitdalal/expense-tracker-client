@@ -21,12 +21,11 @@ const Presets = ({ handlePresetAction }: Props) => {
   ) as PresetsContextType;
   const { expenseData } = useContext(AppContext) as AppContextType;
 
+  const shouldShowBool = expenseData.title === "" && expenseData.expense === "";
+
   useEffect(() => {
-    expenseData.title === "" &&
-      expenseData.expense === "" &&
-      setShouldShow(true);
-    // eslint-disable-next-line
-  }, []);
+    shouldShowBool && setShouldShow(true);
+  }, [shouldShowBool]);
 
   useEffect(() => {
     console.log(data);
