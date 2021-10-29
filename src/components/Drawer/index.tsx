@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { SwipeableDrawer, Box, Typography } from "@mui/material";
+import { SwipeableDrawer, Box } from "@mui/material";
 
 import DrawerForm from "../DrawerForm";
 import Puller from "../Puller";
@@ -37,9 +37,6 @@ const Drawer = () => {
         flexDirection='column'
         height='100%'
       >
-        <Typography variant='h4' textAlign='center'>
-          {expenseData.title}
-        </Typography>
         <DrawerForm />
       </Box>
     </SwipeableDrawer>

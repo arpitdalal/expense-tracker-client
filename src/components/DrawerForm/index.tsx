@@ -1,6 +1,6 @@
 import { useState, useContext, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { Box } from "@mui/system";
 import { Send } from "@mui/icons-material";
@@ -42,24 +42,37 @@ const DrawerForm = () => {
     PresetsContext
   ) as PresetsContextType;
 
+  const btnTextBool = expenseData.title !== "" && expenseData.expense !== "";
+
   const { pathname } = useLocation();
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>): void => {
       e.preventDefault();
+      setExpenseData({
+        ...expenseData,
+        title: formData.title,
+        expense: formData.expense,
+      });
       pathname.includes("presets")
         ? handlePresetsAction(formData)
         : handleAction(formData);
     },
-    [handleAction, handlePresetsAction, formData, pathname]
+    [
+      setExpenseData,
+      expenseData,
+      handleAction,
+      handlePresetsAction,
+      formData,
+      pathname,
+    ]
   );
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>): void => {
-      setExpenseData({ ...expenseData, [e.target.name]: e.target.value });
       setFormData({ ...formData, [e.target.name]: e.target.value });
     },
-    [formData, setFormData, expenseData, setExpenseData]
+    [formData, setFormData]
   );
 
   const handlePresetAction = useCallback(
@@ -68,7 +81,6 @@ const DrawerForm = () => {
       { title, expense }: ExpenseData,
       idx: number
     ): void => {
-      setExpenseData({ ...expenseData, title, expense });
       setFormData({ ...formData, title, expense });
 
       let newData: Sheet[] | null = null;
@@ -97,10 +109,8 @@ const DrawerForm = () => {
       }
       newData && setData(newData);
     },
-    [setFormData, formData, setExpenseData, expenseData, setData, data]
+    [setFormData, formData, setData, data]
   );
-
-  const btnTextBool = expenseData.title !== "" && expenseData.expense !== "";
 
   useEffect(() => {
     btnTextBool && setBtnText("Update");
@@ -112,6 +122,9 @@ const DrawerForm = () => {
 
   return (
     <>
+      <Typography variant='h4' textAlign='center'>
+        {formData.title}
+      </Typography>
       {!pathname.includes("presets") && (
         <Presets handlePresetAction={handlePresetAction} />
       )}
