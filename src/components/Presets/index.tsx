@@ -32,7 +32,13 @@ const Presets = ({ handlePresetAction }: Props) => {
   }, []);
 
   return (
-    <Box display='flex' flexDirection='row' flexWrap='wrap' marginTop='1rem'>
+    <Box
+      display='flex'
+      flexDirection='row'
+      flexWrap='wrap'
+      gap='1rem'
+      justifyContent='center'
+    >
       {!loading &&
         !error &&
         shouldShow &&

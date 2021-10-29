@@ -24,7 +24,8 @@ const Drawer = () => {
         sx: {
           borderTopLeftRadius: 8,
           borderTopRightRadius: 8,
-          py: "2rem",
+          pb: "2rem",
+          pt: "3rem",
         },
       }}
     >
