@@ -7,15 +7,19 @@ import {
 } from "react";
 import { ErrorResponse, Sheet } from "use-google-sheets/dist/types";
 
-import { FormData } from "../components/DrawerForm";
 import useGoogleSheets from "../hooks/useGoogleSheets";
-import { AppContext, AppContextType, serverUrl } from "./appContext";
+import {
+  AppContext,
+  AppContextType,
+  ExpenseData,
+  serverUrl,
+} from "./appContext";
 
 export type PresetsContextType = {
   data: Sheet[] | null;
   loading: boolean;
   error: ErrorResponse | null;
-  handlePresetsAction: (formData?: FormData | undefined) => void;
+  handlePresetsAction: (formData?: ExpenseData | undefined) => void;
 };
 
 export const PresetsContext = createContext({});
@@ -42,7 +46,7 @@ const PresetsContextProvider = (
   } = useContext(AppContext) as AppContextType;
 
   const handlePresetsAction = useCallback(
-    (formData?: FormData) => {
+    (formData?: ExpenseData) => {
       switch (action) {
         case "create": {
           if (!formData) break;

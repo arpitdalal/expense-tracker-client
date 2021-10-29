@@ -18,13 +18,8 @@ import Presets from "../Presets";
 
 export type Action = "update" | "create" | "delete" | "";
 
-export type FormData = {
-  title: string;
-  expense: string;
-};
-
 const DrawerForm = () => {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<ExpenseData>({
     title: "",
     expense: "",
   });

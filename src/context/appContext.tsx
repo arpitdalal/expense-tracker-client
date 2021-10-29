@@ -4,7 +4,7 @@ import { ErrorResponse, Sheet } from "use-google-sheets/dist/types";
 
 import { isNextMonthYear, isPrevMonthYear } from "../utils";
 import { Severity } from "../components/Alert";
-import { Action, FormData } from "../components/DrawerForm";
+import { Action } from "../components/DrawerForm";
 import useGoogleSheets from "../hooks/useGoogleSheets";
 import PresetsContextProvider from "./presetsContext";
 
@@ -37,7 +37,7 @@ export type AppContextType = {
   setMessage: React.Dispatch<React.SetStateAction<string>>;
   severity: Severity;
   setSeverity: React.Dispatch<React.SetStateAction<Severity>>;
-  handleAction: (formData?: FormData | undefined) => void;
+  handleAction: (formData?: ExpenseData | undefined) => void;
   toggleDialog: (newOpen: boolean) => void;
   isFetchLoading: boolean;
   setIsFetchLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -124,7 +124,7 @@ const AppContextProvider = (
   );
 
   const handleAction = useCallback(
-    (formData?: FormData) => {
+    (formData?: ExpenseData) => {
       switch (action) {
         case "create": {
           if (!formData) break;
