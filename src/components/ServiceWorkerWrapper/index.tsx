@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const ServiceWorkerWrapper = () => {
-  const [showReload, setShowReload] = useState(true);
+  const [showReload, setShowReload] = useState(false);
   const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(
     null
   );
