@@ -6,9 +6,7 @@ import Puller from "../Puller";
 import { AppContext, AppContextType } from "../../context/appContext";
 
 const Drawer = () => {
-  const { drawerOpen, toggleDrawer, expenseData } = useContext(
-    AppContext
-  ) as AppContextType;
+  const { drawerOpen, toggleDrawer } = useContext(AppContext) as AppContextType;
 
   return (
     <SwipeableDrawer
