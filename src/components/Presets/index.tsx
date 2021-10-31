@@ -27,10 +27,6 @@ const Presets = ({ handlePresetAction }: Props) => {
     shouldShowBool && setShouldShow(true);
   }, [shouldShowBool]);
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   return (
     <Box
       display='flex'
