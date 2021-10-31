@@ -309,7 +309,9 @@ const AppContextProvider = (
   );
 
   useEffect(() => {
-    setData(googleData);
+    const filteredGoogleData =
+      googleData && googleData.filter(({ id }) => !id.includes("Presets"));
+    setData(filteredGoogleData);
     setLoading(googleLoading);
     setError(googleError);
   }, [googleData, googleLoading, googleError]);
