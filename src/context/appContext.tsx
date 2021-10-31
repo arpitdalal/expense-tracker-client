@@ -37,13 +37,14 @@ export type AppContextType = {
   setMessage: React.Dispatch<React.SetStateAction<string>>;
   severity: Severity;
   setSeverity: React.Dispatch<React.SetStateAction<Severity>>;
-  handleAction: (formData?: ExpenseData | undefined) => void;
+  handleAction: (formData?: ExpenseData) => void;
   toggleDialog: (newOpen: boolean) => void;
   isFetchLoading: boolean;
   setIsFetchLoading: React.Dispatch<React.SetStateAction<boolean>>;
   total: number[];
   setTotal: React.Dispatch<React.SetStateAction<number[]>>;
   swiperHandlers: SwipeableHandlers;
+  handleAddMonthAction: (sheetName: any) => void;
 };
 
 export type ExpenseData = {
@@ -308,6 +309,47 @@ const AppContextProvider = (
     ]
   );
 
+  const handleAddMonthAction = useCallback(
+    (sheetName) => {
+      setIsFetchLoading(true);
+
+      fetch(serverUrl, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          title: "",
+          expense: "",
+          resSheetName: sheetName,
+        }),
+      })
+        .then((resData) => {
+          if (resData.status !== 201) throw new Error("Something went wrong");
+          setOpenAlert(true);
+          setMessage("Month Added");
+          setSeverity("snack-success");
+          setData(
+            (prevData) => prevData && [...prevData, { id: sheetName, data: [] }]
+          );
+        })
+        .catch(() => {
+          setOpenAlert(true);
+          setMessage("Something went wrong");
+          setSeverity("snack-error");
+        })
+        .finally(() => {
+          setIsFetchLoading(false);
+        });
+    },
+    [setOpenAlert, setMessage, setSeverity, setData]
+  );
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
   useEffect(() => {
     const filteredGoogleData =
       googleData && googleData.filter(({ id }) => !id.includes("Presets"));
@@ -352,6 +394,7 @@ const AppContextProvider = (
         setIsFetchLoading,
         setMessage,
         setSeverity,
+        handleAddMonthAction,
       }}
       {...props}
     >

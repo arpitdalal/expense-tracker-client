@@ -9,6 +9,7 @@ import ErrorAlert from "../../components/ErrorAlert";
 import Carousel from "../../components/Carousel";
 import ExpenseCard from "../../components/ExpenseCard";
 import Total from "../../components/Total";
+import AddMonthBtn from "../../components/AddMonthBtn";
 
 export const useStyles = makeStyles(() =>
   createStyles({
@@ -58,6 +59,9 @@ const Home = () => {
       {data && !loading && !error && (
         <>
           <Carousel>{monthYears && monthYears[selectedMonthYear]}</Carousel>
+          <Box textAlign='right' mt='1rem'>
+            <AddMonthBtn />
+          </Box>
           <Box {...swiperHandlers}>
             <Box marginTop='2rem' className={classes.flexWrapper}>
               {data[selectedMonthYear].data.map((dataExpense: any, idx) => (
