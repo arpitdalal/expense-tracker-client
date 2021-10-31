@@ -313,15 +313,13 @@ const AppContextProvider = (
     (sheetName) => {
       setIsFetchLoading(true);
 
-      fetch(serverUrl, {
+      fetch(`${serverUrl}/add-month`, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
         method: "POST",
         body: JSON.stringify({
-          title: "",
-          expense: "",
           resSheetName: sheetName,
         }),
       })
@@ -345,10 +343,6 @@ const AppContextProvider = (
     },
     [setOpenAlert, setMessage, setSeverity, setData]
   );
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   useEffect(() => {
     const filteredGoogleData =
