@@ -1,48 +1,56 @@
-import { useState, useCallback, useEffect, useContext, useRef } from "react";
+import { useCallback, useContext } from "react";
 import { Button } from "@mui/material";
 
 import { AppContext, AppContextType } from "../../context/appContext";
 
-const AddMonthBtn = () => {
-  const [shouldShow, setShouldShow] = useState<boolean>(true);
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
+const AddMonthBtn = () => {
   const { data, handleAddMonthAction } = useContext(
     AppContext
   ) as AppContextType;
 
-  const currentMonth = useRef(
-    new Date().toLocaleString("default", {
-      month: "short",
-    })
-  );
-
   const handleAddMonth = useCallback(() => {
+    if (!data) return;
     const date = new Date();
-    date.setMonth(date.getMonth() + 1);
+    const lastMonthInData: string = data[data.length - 1].id.split("-")[0];
+    const monthIndex: number = months.indexOf(lastMonthInData);
+    date.setMonth(monthIndex + 1);
+
+    const lastYearInData: string = data[data.length - 1].id.split("-")[1];
+    const year: string = date.toLocaleString("default", {
+      year: "2-digit",
+    });
+    if (monthIndex !== 11 && lastYearInData !== year) {
+      date.setFullYear(date.getFullYear() + 1);
+      console.log(date.getFullYear());
+    }
+
     const sheetName = `${date.toLocaleString("default", {
       month: "short",
     })}-${date.toLocaleString("default", {
       year: "2-digit",
     })}`;
     handleAddMonthAction(sheetName);
-  }, [handleAddMonthAction]);
-
-  useEffect(() => {
-    if (data && data[data.length - 1].id.includes(currentMonth.current)) {
-      setShouldShow(true);
-    } else {
-      setShouldShow(false);
-    }
-  }, [data, currentMonth, setShouldShow]);
+  }, [handleAddMonthAction, data]);
 
   return (
-    <>
-      {shouldShow && (
-        <Button onClick={handleAddMonth} variant='contained'>
-          Create next month
-        </Button>
-      )}
-    </>
+    <Button onClick={handleAddMonth} variant='contained'>
+      Create next month
+    </Button>
   );
 };
 
