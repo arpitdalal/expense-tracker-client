@@ -10,7 +10,7 @@ import {
   MoreVert,
   EditRounded,
   DeleteRounded,
-  AddCircleRounded,
+  AddRounded,
 } from "@mui/icons-material";
 import {
   Card,
@@ -137,7 +137,7 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
                     handleAddPreset();
                   }}
                 >
-                  <AddCircleRounded />
+                  <AddRounded />
                   <Typography marginLeft='0.4rem' variant='body1'>
                     Add to Presets
                   </Typography>

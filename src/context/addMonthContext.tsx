@@ -1,25 +1,11 @@
 import { useContext, createContext, useCallback } from "react";
 
 import { AppContext, AppContextType, serverUrl } from "./appContext";
+import { generateAddMonthSheetName } from "../utils";
 
 export type AddMonthContextType = {
   handleAddMonth: () => Promise<void>;
 };
-
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
 
 export const AddMonthContext = createContext({});
 
@@ -72,25 +58,8 @@ const AddMonthContextProvider = (
 
   const handleAddMonth = useCallback(() => {
     if (!data) return;
-    const date = new Date();
-    const lastMonthInData: string = data[data.length - 1].id.split("-")[0];
-    const monthIndex: number = months.indexOf(lastMonthInData);
-    date.setMonth(monthIndex + 1);
 
-    const lastYearInData: string = data[data.length - 1].id.split("-")[1];
-    const year: string = date.toLocaleString("default", {
-      year: "2-digit",
-    });
-    if (monthIndex !== 11 && lastYearInData !== year) {
-      date.setFullYear(date.getFullYear() + 1);
-      console.log(date.getFullYear());
-    }
-
-    const sheetName = `${date.toLocaleString("default", {
-      month: "short",
-    })}-${date.toLocaleString("default", {
-      year: "2-digit",
-    })}`;
+    const sheetName = generateAddMonthSheetName(data);
     handleAddMonthAction(sheetName);
   }, [data, handleAddMonthAction]);
 

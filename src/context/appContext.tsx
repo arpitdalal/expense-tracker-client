@@ -2,12 +2,17 @@ import { createContext, useState, useCallback, useEffect } from "react";
 import { SwipeableHandlers, useSwipeable } from "react-swipeable";
 import { ErrorResponse, Sheet } from "use-google-sheets/dist/types";
 
-import { isNextMonthYear, isPrevMonthYear } from "../utils";
+import {
+  isNextMonthYear,
+  isPrevMonthYear,
+  generateAddMonthSheetName,
+} from "../utils";
 import { Severity } from "../components/Alert";
 import { Action } from "../components/DrawerForm";
 import useGoogleSheets from "../hooks/useGoogleSheets";
 import PresetsContextProvider from "./presetsContext";
 import AddMonthContextProvider from "./addMonthContext";
+import TotalMenuContextProvider from "./totalMenuContext";
 
 export type AppContextType = {
   selectedMonthYear: number;
@@ -46,12 +51,19 @@ export type AppContextType = {
   total: number[];
   setTotal: React.Dispatch<React.SetStateAction<number[]>>;
   swiperHandlers: SwipeableHandlers;
+  handleCarryForwardAction: (
+    customAction: Action,
+    formData?: ExpenseData | undefined
+  ) => void;
+  handleTotalActions: (action: TotalActions, formData: ExpenseData) => void;
 };
 
 export type ExpenseData = {
   title: string;
   expense: string;
 };
+
+export type TotalActions = "Paid" | "Received" | "Carry forward";
 
 export const AppContext = createContext<AppContextType | null>(null);
 
@@ -126,7 +138,7 @@ const AppContextProvider = (
   );
 
   const handleAction = useCallback(
-    (formData?: ExpenseData, customAction?: Action) => {
+    (formData?: ExpenseData, customAction?: Action, sheetName?: string) => {
       switch (customAction ?? action) {
         case "create": {
           if (!formData) break;
@@ -134,7 +146,8 @@ const AppContextProvider = (
           setIsFetchLoading(true);
           setIsDrawerFormSubmitBtnLoading(true);
           const resSheetName =
-            monthYears && monthYears[selectedMonthYear].replace(" ", "-");
+            sheetName ??
+            (monthYears ? monthYears[selectedMonthYear].replace(" ", "-") : "");
 
           fetch(serverUrl, {
             headers: {
@@ -157,11 +170,7 @@ const AppContextProvider = (
               newData =
                 data &&
                 data.map((sheet) => {
-                  if (
-                    sheet.id ===
-                    (monthYears &&
-                      monthYears[selectedMonthYear].replace(" ", "-"))
-                  ) {
+                  if (sheet.id === resSheetName) {
                     sheet.data.push({
                       Title: formData.title,
                       Expense: formData.expense,
@@ -189,7 +198,8 @@ const AppContextProvider = (
           setIsFetchLoading(true);
           setIsDrawerFormSubmitBtnLoading(true);
           const resSheetName =
-            monthYears && monthYears[selectedMonthYear].replace(" ", "-");
+            sheetName ??
+            (monthYears ? monthYears[selectedMonthYear].replace(" ", "-") : "");
 
           fetch(serverUrl, {
             headers: {
@@ -213,11 +223,7 @@ const AppContextProvider = (
               newData =
                 data &&
                 data.map((sheet) => {
-                  if (
-                    sheet.id ===
-                    (monthYears &&
-                      monthYears[selectedMonthYear].replace(" ", "-"))
-                  ) {
+                  if (sheet.id === resSheetName) {
                     sheet.data[expenseIdx] = {
                       Title: formData.title,
                       Expense: formData.expense,
@@ -243,7 +249,8 @@ const AppContextProvider = (
           setIsFetchLoading(true);
 
           const resSheetName =
-            monthYears && monthYears[selectedMonthYear].replace(" ", "-");
+            sheetName ??
+            (monthYears ? monthYears[selectedMonthYear].replace(" ", "-") : "");
 
           fetch(serverUrl, {
             headers: {
@@ -266,11 +273,7 @@ const AppContextProvider = (
               newData =
                 data &&
                 data.map((sheet) => {
-                  if (
-                    sheet.id ===
-                    (monthYears &&
-                      monthYears[selectedMonthYear].replace(" ", "-"))
-                  ) {
+                  if (sheet.id === resSheetName) {
                     sheet.data.splice(expenseIdx, 1);
                   }
                   return sheet;
@@ -307,6 +310,125 @@ const AppContextProvider = (
       expenseIdx,
       toggleDrawer,
       toggleDialog,
+    ]
+  );
+
+  const handleTotalActions = useCallback(
+    (action: TotalActions, formData: ExpenseData) => {
+      setIsFetchLoading(true);
+
+      const sheetName = monthYears
+        ? monthYears[selectedMonthYear].replace(" ", "-")
+        : "";
+
+      fetch(serverUrl, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          ...formData,
+          resSheetName: sheetName,
+        }),
+      })
+        .then((resData) => {
+          if (resData.status !== 201) throw new Error("Something went wrong");
+          setOpenAlert(true);
+          setMessage(`${action} expense added`);
+          setSeverity("snack-success");
+
+          setData((prevData) => {
+            if (!prevData) return null;
+            const newData: Sheet[] = [...prevData];
+            newData.map((sheet) => {
+              if (sheet.id === sheetName) {
+                sheet.data.push({
+                  Title: formData.title,
+                  Expense: formData.expense,
+                });
+              }
+              return sheet;
+            });
+            return newData;
+          });
+        })
+        .catch(() => {
+          setOpenAlert(true);
+          setMessage("Something went wrong");
+          setSeverity("snack-error");
+        })
+        .finally(() => {
+          setIsFetchLoading(false);
+        });
+    },
+    [
+      setIsFetchLoading,
+      setOpenAlert,
+      setMessage,
+      setSeverity,
+      setData,
+      monthYears,
+      selectedMonthYear,
+    ]
+  );
+
+  const handleCarryForwardAction = useCallback(
+    (customAction: Action, formData?: ExpenseData) => {
+      if (!formData || customAction !== "create") return;
+
+      setIsFetchLoading(true);
+
+      const sheetName = generateAddMonthSheetName(data || []);
+      fetch(serverUrl, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          ...formData,
+          resSheetName: sheetName,
+        }),
+      })
+        .then((resData) => {
+          if (resData.status !== 201) throw new Error("Something went wrong");
+          setOpenAlert(true);
+          setMessage("Carry forward expense added");
+          setSeverity("snack-success");
+
+          setData((prevData) => {
+            if (!prevData) return null;
+            const newData: Sheet[] = [...prevData];
+            newData.push({ id: sheetName, data: [] });
+            newData[newData.length - 1].data.push({
+              Title: formData.title,
+              Expense: formData.expense,
+            });
+            return newData;
+          });
+          handleTotalActions("Carry forward", {
+            title: `Carry forwarded to ${sheetName.split("-")[0]}`,
+            expense: formData.expense.replace("-", ""),
+          });
+        })
+        .catch(() => {
+          setOpenAlert(true);
+          setMessage("Something went wrong");
+          setSeverity("snack-error");
+        })
+        .finally(() => {
+          setIsFetchLoading(false);
+        });
+    },
+    [
+      setOpenAlert,
+      setMessage,
+      setSeverity,
+      setIsFetchLoading,
+      handleTotalActions,
+      setData,
+      data,
     ]
   );
 
@@ -355,11 +477,15 @@ const AppContextProvider = (
         setIsFetchLoading,
         setMessage,
         setSeverity,
+        handleCarryForwardAction,
+        handleTotalActions,
       }}
       {...props}
     >
       <PresetsContextProvider>
-        <AddMonthContextProvider>{props.children}</AddMonthContextProvider>
+        <AddMonthContextProvider>
+          <TotalMenuContextProvider>{props.children}</TotalMenuContextProvider>
+        </AddMonthContextProvider>
       </PresetsContextProvider>
     </AppContext.Provider>
   );

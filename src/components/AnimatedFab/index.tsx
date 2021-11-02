@@ -57,7 +57,7 @@ const AnimatedFab = () => {
       unmountOnExit
     >
       <Fab
-        color='secondary'
+        color='primary'
         sx={{
           position: "fixed",
           bottom: (theme) => theme.spacing(2),
