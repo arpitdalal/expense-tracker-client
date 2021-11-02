@@ -1,5 +1,7 @@
 # <p align="center">Expense Tracker Client</p>
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/cc47c8b4-7181-4c60-9ee3-f48821dd68a4/deploy-status)](https://app.netlify.com/sites/ex-track/deploys)
+
 This is a react client that consumes [this](https://github.dev/arpitdalal/expense-tracker-api) api.
 
 ## Technologies used
