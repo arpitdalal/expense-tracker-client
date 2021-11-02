@@ -7,6 +7,7 @@ import { Severity } from "../components/Alert";
 import { Action } from "../components/DrawerForm";
 import useGoogleSheets from "../hooks/useGoogleSheets";
 import PresetsContextProvider from "./presetsContext";
+import AddMonthContextProvider from "./addMonthContext";
 
 export type AppContextType = {
   selectedMonthYear: number;
@@ -24,6 +25,7 @@ export type AppContextType = {
   expenseIdx: number;
   setExpenseIdx: React.Dispatch<React.SetStateAction<number>>;
   data: Sheet[] | null;
+  setData: React.Dispatch<React.SetStateAction<Sheet[] | null>>;
   loading: boolean;
   error: ErrorResponse | null;
   openAlert: boolean;
@@ -37,14 +39,13 @@ export type AppContextType = {
   setMessage: React.Dispatch<React.SetStateAction<string>>;
   severity: Severity;
   setSeverity: React.Dispatch<React.SetStateAction<Severity>>;
-  handleAction: (formData?: ExpenseData) => void;
+  handleAction: (formData?: ExpenseData, customAction?: Action) => void;
   toggleDialog: (newOpen: boolean) => void;
   isFetchLoading: boolean;
   setIsFetchLoading: React.Dispatch<React.SetStateAction<boolean>>;
   total: number[];
   setTotal: React.Dispatch<React.SetStateAction<number[]>>;
   swiperHandlers: SwipeableHandlers;
-  handleAddMonthAction: (sheetName: any) => void;
 };
 
 export type ExpenseData = {
@@ -125,8 +126,8 @@ const AppContextProvider = (
   );
 
   const handleAction = useCallback(
-    (formData?: ExpenseData) => {
-      switch (action) {
+    (formData?: ExpenseData, customAction?: Action) => {
+      switch (customAction ?? action) {
         case "create": {
           if (!formData) break;
 
@@ -309,41 +310,6 @@ const AppContextProvider = (
     ]
   );
 
-  const handleAddMonthAction = useCallback(
-    (sheetName) => {
-      setIsFetchLoading(true);
-
-      fetch(`${serverUrl}/add-month`, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          resSheetName: sheetName,
-        }),
-      })
-        .then((resData) => {
-          if (resData.status !== 201) throw new Error("Something went wrong");
-          setOpenAlert(true);
-          setMessage("Month Added");
-          setSeverity("snack-success");
-          setData(
-            (prevData) => prevData && [...prevData, { id: sheetName, data: [] }]
-          );
-        })
-        .catch(() => {
-          setOpenAlert(true);
-          setMessage("Something went wrong");
-          setSeverity("snack-error");
-        })
-        .finally(() => {
-          setIsFetchLoading(false);
-        });
-    },
-    [setOpenAlert, setMessage, setSeverity, setData]
-  );
-
   useEffect(() => {
     const filteredGoogleData =
       googleData && googleData.filter(({ id }) => !id.includes("Presets"));
@@ -370,6 +336,7 @@ const AppContextProvider = (
         expenseIdx,
         setExpenseIdx,
         data,
+        setData,
         error,
         loading,
         isDrawerFormSubmitBtnLoading,
@@ -388,11 +355,12 @@ const AppContextProvider = (
         setIsFetchLoading,
         setMessage,
         setSeverity,
-        handleAddMonthAction,
       }}
       {...props}
     >
-      <PresetsContextProvider>{props.children}</PresetsContextProvider>
+      <PresetsContextProvider>
+        <AddMonthContextProvider>{props.children}</AddMonthContextProvider>
+      </PresetsContextProvider>
     </AppContext.Provider>
   );
 };
