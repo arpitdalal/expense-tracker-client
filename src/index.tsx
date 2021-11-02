@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Container, CssBaseline, ThemeProvider } from "@mui/material";
+import { Container, CssBaseline } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
 
 import App from "./App";
 import theme from "./hooks/useStyles";

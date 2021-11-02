@@ -1,6 +1,5 @@
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import { Link, Toolbar, Typography } from "@mui/material";
-import { Box } from "@mui/system";
+import { Link, Toolbar, Typography, Box } from "@mui/material";
 
 const Header = () => {
   const location = useLocation();

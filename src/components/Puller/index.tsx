@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { Box } from "@mui/system";
+import { Box } from "@mui/material";
 
 const Puller = styled(Box)(({ theme }) => ({
   width: 30,

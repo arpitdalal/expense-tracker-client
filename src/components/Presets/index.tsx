@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { Box } from "@mui/system";
+import { Box } from "@mui/material";
 
 import { AppContext, AppContextType } from "../../context/appContext";
 import {
