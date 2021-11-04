@@ -1,6 +1,5 @@
 import { useEffect, useContext } from "react";
 import { Box } from "@mui/material";
-// import { Box } from "@mui/system";
 import { createStyles, makeStyles } from "@mui/styles";
 
 import { AppContext, AppContextType } from "../../context/appContext";
