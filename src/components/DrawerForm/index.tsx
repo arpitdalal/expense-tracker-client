@@ -30,6 +30,7 @@ const DrawerForm = () => {
     expense: "",
   });
   const [btnText, setBtnText] = useState<string>("Create");
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(false);
 
   const {
     setExpenseData,
@@ -116,6 +117,14 @@ const DrawerForm = () => {
   }, [btnTextBool]);
 
   useEffect(() => {
+    if (formData.title === "" || formData.expense === "") {
+      setIsSubmitDisabled(true);
+    } else {
+      setIsSubmitDisabled(false);
+    }
+  }, [formData]);
+
+  useEffect(() => {
     setFormData(expenseData);
   }, [expenseData]);
 
@@ -157,6 +166,7 @@ const DrawerForm = () => {
             variant='contained'
             loadingPosition='end'
             endIcon={<Send />}
+            disabled={isSubmitDisabled}
           >
             {btnText}
           </LoadingButton>
