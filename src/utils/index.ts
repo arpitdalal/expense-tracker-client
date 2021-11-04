@@ -9,20 +9,18 @@ export const isNextMonthYear = (
   monthYears: string[] | null,
   selectedMonthYear: number
 ): boolean => {
-  if (monthYears && monthYears[selectedMonthYear + 1] === undefined) {
-    return false;
-  }
-  return true;
+  return monthYears && monthYears[selectedMonthYear + 1] === undefined
+    ? false
+    : true;
 };
 
-export const isPrevMonthYear = (
+export const isPrevMonsthYear = (
   monthYears: string[] | null,
   selectedMonthYear: number
 ): boolean => {
-  if (monthYears && monthYears[selectedMonthYear - 1] === undefined) {
-    return false;
-  }
-  return true;
+  return monthYears && monthYears[selectedMonthYear - 1] === undefined
+    ? false
+    : true;
 };
 
 export const roundNumber = (number: number) => {
