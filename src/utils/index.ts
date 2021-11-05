@@ -14,7 +14,7 @@ export const isNextMonthYear = (
     : true;
 };
 
-export const isPrevMonsthYear = (
+export const isPrevMonthYear = (
   monthYears: string[] | null,
   selectedMonthYear: number
 ): boolean => {
