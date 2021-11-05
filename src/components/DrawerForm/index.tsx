@@ -1,4 +1,4 @@
-import { useState, useContext, useCallback, useEffect } from "react";
+import { useState, useContext, useCallback, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { TextField, Typography, Box } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
@@ -42,7 +42,9 @@ const DrawerForm = () => {
     PresetsContext
   ) as PresetsContextType;
 
-  const btnTextBool = expenseData.title !== "" && expenseData.expense !== "";
+  const btnTextBool = useRef(
+    expenseData.title !== "" && expenseData.expense !== ""
+  );
 
   const { pathname } = useLocation();
 
@@ -113,7 +115,7 @@ const DrawerForm = () => {
   );
 
   useEffect(() => {
-    btnTextBool && setBtnText("Update");
+    btnTextBool.current && setBtnText("Update");
   }, [btnTextBool]);
 
   useEffect(() => {
