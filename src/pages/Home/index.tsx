@@ -53,7 +53,7 @@ const Home = () => {
   }, [data, setMonthYears, setSelectedMonthYear, setTotal]);
 
   return (
-    <>
+    <Box component='div' {...swiperHandlers}>
       {loading && <AnimatedSkeleton />}
       {error && <ErrorAlert />}
       {data && !loading && !error && (
@@ -62,7 +62,8 @@ const Home = () => {
           <Box textAlign='right' mt='1rem'>
             <AddMonthBtn />
           </Box>
-          <Box {...swiperHandlers}>
+          <Total />
+          <Box>
             <Box marginTop='2rem' className={classes.flexWrapper}>
               {data[selectedMonthYear].data.map((dataExpense: any, idx) => (
                 <Box key={`${dataExpense.Title}-${idx}`}>
@@ -74,11 +75,10 @@ const Home = () => {
                 </Box>
               ))}
             </Box>
-            <Total />
           </Box>
         </>
       )}
-    </>
+    </Box>
   );
 };
 
