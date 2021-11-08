@@ -160,7 +160,7 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
               >
                 <DeleteRounded color='error' />
                 <Typography marginLeft='0.4rem' color='error'>
-                  Delete
+                  Remove
                 </Typography>
               </MenuItem>
             </Menu>
