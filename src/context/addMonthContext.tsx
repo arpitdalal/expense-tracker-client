@@ -1,6 +1,6 @@
 import { useContext, createContext, useCallback } from "react";
 
-import { AppContext, AppContextType, serverUrl } from "./appContext";
+import { AppContext, AppContextType, serverSheetUrl } from "./appContext";
 import { generateAddMonthSheetName } from "../utils";
 
 export type AddMonthContextType = {
@@ -25,7 +25,7 @@ const AddMonthContextProvider = (
     (sheetName: string) => {
       setIsFetchLoading(true);
 
-      fetch(`${serverUrl}/add-month`, {
+      fetch(serverSheetUrl, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",

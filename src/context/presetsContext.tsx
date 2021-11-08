@@ -12,7 +12,7 @@ import {
   AppContext,
   AppContextType,
   ExpenseData,
-  serverUrl,
+  serverRowUrl,
 } from "./appContext";
 
 export type PresetsContextType = {
@@ -58,7 +58,7 @@ const PresetsContextProvider = (
           setIsFetchLoading(true);
           setIsDrawerFormSubmitBtnLoading(true);
 
-          fetch(serverUrl, {
+          fetch(serverRowUrl, {
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",
@@ -108,7 +108,7 @@ const PresetsContextProvider = (
           setIsFetchLoading(true);
           setIsDrawerFormSubmitBtnLoading(true);
 
-          fetch(serverUrl, {
+          fetch(serverRowUrl, {
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",
@@ -157,7 +157,7 @@ const PresetsContextProvider = (
         case "delete": {
           setIsFetchLoading(true);
 
-          fetch(serverUrl, {
+          fetch(serverRowUrl, {
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",

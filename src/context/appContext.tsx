@@ -67,7 +67,8 @@ export type TotalActions = "Paid" | "Received" | "Carry forward";
 
 export const AppContext = createContext<AppContextType | null>(null);
 
-export const serverUrl = `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_PATH}sheets/${process.env.REACT_APP_GOOGLE_SHEETS_ID}`;
+export const serverSheetUrl = `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_PATH}sheets/${process.env.REACT_APP_GOOGLE_SHEETS_ID}`;
+export const serverRowUrl = `${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_PATH}sheets/${process.env.REACT_APP_GOOGLE_SHEETS_ID}/row`;
 
 const AppContextProvider = (
   props: React.PropsWithChildren<React.ReactNode>
@@ -149,7 +150,7 @@ const AppContextProvider = (
             sheetName ??
             (monthYears ? monthYears[selectedMonthYear].replace(" ", "-") : "");
 
-          fetch(serverUrl, {
+          fetch(serverRowUrl, {
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",
@@ -202,7 +203,7 @@ const AppContextProvider = (
             sheetName ??
             (monthYears ? monthYears[selectedMonthYear].replace(" ", "-") : "");
 
-          fetch(serverUrl, {
+          fetch(serverRowUrl, {
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",
@@ -255,7 +256,7 @@ const AppContextProvider = (
             sheetName ??
             (monthYears ? monthYears[selectedMonthYear].replace(" ", "-") : "");
 
-          fetch(serverUrl, {
+          fetch(serverRowUrl, {
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",
@@ -324,7 +325,7 @@ const AppContextProvider = (
         ? monthYears[selectedMonthYear].replace(" ", "-")
         : "";
 
-      fetch(serverUrl, {
+      fetch(serverRowUrl, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -384,7 +385,7 @@ const AppContextProvider = (
       setIsFetchLoading(true);
 
       const sheetName = generateAddMonthSheetName(data || []);
-      fetch(serverUrl, {
+      fetch(serverRowUrl, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
