@@ -39,7 +39,7 @@ const AddMonthContextProvider = (
           if (resData.status !== 201) throw new Error("Something went wrong");
           setOpenAlert(true);
           setMessage("Month Added");
-          setSeverity("snack-success");
+          setSeverity("success");
           setData(
             (prevData) => prevData && [...prevData, { id: sheetName, data: [] }]
           );
@@ -47,7 +47,7 @@ const AddMonthContextProvider = (
         .catch(() => {
           setOpenAlert(true);
           setMessage("Something went wrong");
-          setSeverity("snack-error");
+          setSeverity("error");
         })
         .finally(() => {
           setIsFetchLoading(false);

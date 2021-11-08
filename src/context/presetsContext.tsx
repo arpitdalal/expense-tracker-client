@@ -71,7 +71,7 @@ const PresetsContextProvider = (
                 throw new Error("Something went wrong");
               setOpenAlert(true);
               setMessage("Preset Created");
-              setSeverity("snack-success");
+              setSeverity("success");
               let newData: Sheet[] | null = null;
               newData =
                 data &&
@@ -88,7 +88,7 @@ const PresetsContextProvider = (
             .catch(() => {
               setOpenAlert(true);
               setMessage("Something went wrong");
-              setSeverity("snack-error");
+              setSeverity("error");
             })
             .finally(() => {
               setIsDrawerFormSubmitBtnLoading(false);
@@ -119,7 +119,7 @@ const PresetsContextProvider = (
                 throw new Error("Something went wrong");
               setOpenAlert(true);
               setMessage("Preset Updated");
-              setSeverity("snack-success");
+              setSeverity("success");
               let newData: Sheet[] | null = null;
               newData =
                 data &&
@@ -136,7 +136,7 @@ const PresetsContextProvider = (
             .catch(() => {
               setOpenAlert(true);
               setMessage("Something went wrong");
-              setSeverity("snack-error");
+              setSeverity("error");
             })
             .finally(() => {
               setIsDrawerFormSubmitBtnLoading(false);
@@ -163,7 +163,7 @@ const PresetsContextProvider = (
                 throw new Error("Something went wrong");
               setOpenAlert(true);
               setMessage("Preset Deleted");
-              setSeverity("snack-success");
+              setSeverity("success");
               let newData: Sheet[] | null = null;
               newData =
                 data &&
@@ -176,7 +176,7 @@ const PresetsContextProvider = (
             .catch(() => {
               setOpenAlert(true);
               setMessage("Something went wrong");
-              setSeverity("snack-error");
+              setSeverity("error");
             })
             .finally(() => {
               toggleDialog(false);

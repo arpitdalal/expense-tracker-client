@@ -7,7 +7,7 @@ import {
   isPrevMonthYear,
   generateAddMonthSheetName,
 } from "../utils";
-import { Severity } from "../components/Alert";
+import { Severity } from "../components/SnackBarAlert";
 import { Action } from "../components/DrawerForm";
 import useGoogleSheets from "../hooks/useGoogleSheets";
 import PresetsContextProvider from "./presetsContext";
@@ -91,7 +91,7 @@ const AppContextProvider = (
   const [isFetchLoading, setIsFetchLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [total, setTotal] = useState<number[]>([]);
-  const [severity, setSeverity] = useState<Severity>("");
+  const [severity, setSeverity] = useState<Severity | undefined >();
 
   const setNextMonthYear = useCallback(() => {
     setSelectedMonthYear(selectedMonthYear + 1);
@@ -165,7 +165,7 @@ const AppContextProvider = (
                 throw new Error("Something went wrong");
               setOpenAlert(true);
               setMessage("Expense Created");
-              setSeverity("snack-success");
+              setSeverity("success");
               let newData: Sheet[] | null = null;
               newData =
                 data &&
@@ -184,7 +184,7 @@ const AppContextProvider = (
             .catch(() => {
               setOpenAlert(true);
               setMessage("Something went wrong");
-              setSeverity("snack-error");
+              setSeverity("error");
             })
             .finally(() => {
               setIsDrawerFormSubmitBtnLoading(false);
@@ -218,7 +218,7 @@ const AppContextProvider = (
                 throw new Error("Something went wrong");
               setOpenAlert(true);
               setMessage("Expense Updated");
-              setSeverity("snack-success");
+              setSeverity("success");
               let newData: Sheet[] | null = null;
               newData =
                 data &&
@@ -237,7 +237,7 @@ const AppContextProvider = (
             .catch(() => {
               setOpenAlert(true);
               setMessage("Something went wrong");
-              setSeverity("snack-error");
+              setSeverity("error");
             })
             .finally(() => {
               setIsDrawerFormSubmitBtnLoading(false);
@@ -268,7 +268,7 @@ const AppContextProvider = (
                 throw new Error("Something went wrong");
               setOpenAlert(true);
               setMessage("Expense Deleted");
-              setSeverity("snack-success");
+              setSeverity("success");
               let newData: Sheet[] | null = null;
               newData =
                 data &&
@@ -283,7 +283,7 @@ const AppContextProvider = (
             .catch(() => {
               setOpenAlert(true);
               setMessage("Something went wrong");
-              setSeverity("snack-error");
+              setSeverity("error");
             })
             .finally(() => {
               toggleDialog(false);
@@ -336,7 +336,7 @@ const AppContextProvider = (
           if (resData.status !== 201) throw new Error("Something went wrong");
           setOpenAlert(true);
           setMessage(`${action} expense added`);
-          setSeverity("snack-success");
+          setSeverity("success");
 
           setData((prevData) => {
             if (!prevData) return null;
@@ -356,7 +356,7 @@ const AppContextProvider = (
         .catch(() => {
           setOpenAlert(true);
           setMessage("Something went wrong");
-          setSeverity("snack-error");
+          setSeverity("error");
         })
         .finally(() => {
           setIsFetchLoading(false);
@@ -395,7 +395,7 @@ const AppContextProvider = (
           if (resData.status !== 201) throw new Error("Something went wrong");
           setOpenAlert(true);
           setMessage("Carry forward expense added");
-          setSeverity("snack-success");
+          setSeverity("success");
 
           setData((prevData) => {
             if (!prevData) return null;
@@ -415,7 +415,7 @@ const AppContextProvider = (
         .catch(() => {
           setOpenAlert(true);
           setMessage("Something went wrong");
-          setSeverity("snack-error");
+          setSeverity("error");
         })
         .finally(() => {
           setIsFetchLoading(false);

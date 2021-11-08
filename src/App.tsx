@@ -5,7 +5,7 @@ import { AppContext, AppContextType } from "./context/appContext";
 import CircularPageLoading from "./components/CircularPageLoading";
 import DialogBox from "./components/DialogBox";
 import Drawer from "./components/Drawer";
-import Alert from "./components/Alert";
+import SnackBarAlert from "./components/SnackBarAlert";
 import AnimatedFab from "./components/AnimatedFab";
 
 const App = () => {
@@ -31,7 +31,9 @@ const App = () => {
       {isFetchLoading && <CircularPageLoading />}
       {action === "delete" ? <DialogBox /> : <Drawer />}
 
-      {severity !== "" && message !== "" && <Alert />}
+      {severity && message !== "" && <SnackBarAlert />}
+
+      <SnackBarAlert />
 
       <AnimatedFab />
     </>

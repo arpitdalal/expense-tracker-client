@@ -1,17 +1,14 @@
 import { Snackbar } from "@mui/material";
 
-import { SlideTransition, useStyles } from "../Alert";
+import { SlideTransition } from "../SnackBarAlert";
 
 const ErrorAlert = () => {
-  const classes = useStyles();
-
   return (
     <Snackbar
       open={true}
-      autoHideDuration={60000}
+      autoHideDuration={6000}
       message='Something went wrong. Refresh or try again later.'
       TransitionComponent={SlideTransition}
-      ContentProps={{ className: classes.error }}
       sx={{ top: 0 }}
     />
   );
