@@ -17,10 +17,12 @@ import {
 
 export type PresetsContextType = {
   data: Sheet[] | null;
-  setData: (data: Sheet[]) => void;
+  setData: React.Dispatch<React.SetStateAction<Sheet[] | null>>;
   loading: boolean;
   error: ErrorResponse | null;
   handlePresetsAction: (formData?: ExpenseData | undefined) => void;
+  isSwitchSelected: boolean;
+  setIsSwitchSelected: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const PresetsContext = createContext({});
@@ -31,6 +33,7 @@ const PresetsContextProvider = (
   const [data, setData] = useState<Sheet[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<ErrorResponse | null>(null);
+  const [isSwitchSelected, setIsSwitchSelected] = useState<boolean>(false);
 
   const { googleData, googleLoading, googleError } = useGoogleSheets("Presets");
 
@@ -63,6 +66,7 @@ const PresetsContextProvider = (
             method: "POST",
             body: JSON.stringify({
               ...formData,
+              ShouldAddToNextMonth: isSwitchSelected ? "1" : "0",
               resSheetName: "Presets",
             }),
           })
@@ -79,6 +83,8 @@ const PresetsContextProvider = (
                   sheet.data.push({
                     Title: formData.title,
                     Expense: formData.expense,
+                    ShouldAddToNextMonth: isSwitchSelected ? "1" : "0",
+                    CreatedAt: new Date().toLocaleDateString(),
                   });
                   return sheet;
                 });
@@ -111,6 +117,7 @@ const PresetsContextProvider = (
             body: JSON.stringify({
               id: expenseIdx,
               ...formData,
+              ShouldAddToNextMonth: isSwitchSelected ? "1" : "0",
               resSheetName: "Presets",
             }),
           })
@@ -125,8 +132,11 @@ const PresetsContextProvider = (
                 data &&
                 data.map((sheet) => {
                   sheet.data[expenseIdx] = {
+                    ...sheet.data[expenseIdx],
                     Title: formData.title,
                     Expense: formData.expense,
+                    ShouldAddToNextMonth: isSwitchSelected ? "1" : "0",
+                    UpdatedAt: new Date().toLocaleDateString(),
                   };
                   return sheet;
                 });
@@ -200,6 +210,7 @@ const PresetsContextProvider = (
       setSeverity,
       toggleDialog,
       toggleDrawer,
+      isSwitchSelected,
     ]
   );
 
@@ -222,7 +233,15 @@ const PresetsContextProvider = (
 
   return (
     <PresetsContext.Provider
-      value={{ data, setData, loading, error, handlePresetsAction }}
+      value={{
+        data,
+        setData,
+        loading,
+        error,
+        handlePresetsAction,
+        isSwitchSelected,
+        setIsSwitchSelected,
+      }}
       {...props}
     >
       {props.children}

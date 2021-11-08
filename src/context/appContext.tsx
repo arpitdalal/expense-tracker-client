@@ -91,7 +91,7 @@ const AppContextProvider = (
   const [isFetchLoading, setIsFetchLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [total, setTotal] = useState<number[]>([]);
-  const [severity, setSeverity] = useState<Severity | undefined >();
+  const [severity, setSeverity] = useState<Severity | undefined>();
 
   const setNextMonthYear = useCallback(() => {
     setSelectedMonthYear(selectedMonthYear + 1);
@@ -174,6 +174,7 @@ const AppContextProvider = (
                     sheet.data.push({
                       Title: formData.title,
                       Expense: formData.expense,
+                      CreatedAt: new Date().toLocaleString(),
                     });
                   }
                   return sheet;
@@ -225,8 +226,10 @@ const AppContextProvider = (
                 data.map((sheet) => {
                   if (sheet.id === resSheetName) {
                     sheet.data[expenseIdx] = {
+                      ...sheet.data[expenseIdx],
                       Title: formData.title,
                       Expense: formData.expense,
+                      UpdatedAt: new Date().toLocaleDateString(),
                     };
                   }
                   return sheet;
@@ -346,6 +349,7 @@ const AppContextProvider = (
                 sheet.data.push({
                   Title: formData.title,
                   Expense: formData.expense,
+                  CreatedAt: new Date().toLocaleDateString(),
                 });
               }
               return sheet;
@@ -404,6 +408,7 @@ const AppContextProvider = (
             newData[newData.length - 1].data.push({
               Title: formData.title,
               Expense: formData.expense,
+              CreatedAt: new Date().toLocaleDateString(),
             });
             return newData;
           });

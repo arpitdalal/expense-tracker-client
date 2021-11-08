@@ -15,6 +15,7 @@ import {
   PresetsContextType,
 } from "../../context/presetsContext";
 import Presets from "../Presets";
+import Switch from "../Switch";
 
 export type Action = "update" | "create" | "delete" | "";
 export type PresetAction = "remove" | "add";
@@ -47,6 +48,8 @@ const DrawerForm = () => {
   );
 
   const { pathname } = useLocation();
+
+  const isPresetsPage = pathname === "/presets";
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>): void => {
@@ -135,9 +138,7 @@ const DrawerForm = () => {
       <Typography variant='h4' textAlign='center'>
         {formData.title}
       </Typography>
-      {!pathname.includes("presets") && (
-        <Presets handlePresetAction={handlePresetAction} />
-      )}
+      {!isPresetsPage && <Presets handlePresetAction={handlePresetAction} />}
       <Box
         component='form'
         sx={{
@@ -160,6 +161,11 @@ const DrawerForm = () => {
           name='expense'
           onChange={handleChange}
         />
+        {isPresetsPage && (
+          <Box component='div'>
+            <Switch />
+          </Box>
+        )}
         <Box component='div'>
           <LoadingButton
             loading={isDrawerFormSubmitBtnLoading}
