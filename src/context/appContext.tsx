@@ -2,16 +2,13 @@ import { createContext, useState, useCallback, useEffect } from "react";
 import { SwipeableHandlers, useSwipeable } from "react-swipeable";
 import { ErrorResponse, Sheet } from "use-google-sheets/dist/types";
 
-import {
-  isNextMonthYear,
-  isPrevMonthYear,
-  generateAddMonthSheetName,
-} from "../utils";
+import { isNextMonthYear, isPrevMonthYear } from "../utils";
 import { Severity } from "../components/SnackBarAlert";
 import { Action } from "../components/DrawerForm";
 import useGoogleSheets from "../hooks/useGoogleSheets";
 import PresetsContextProvider from "./presetsContext";
 import AddMonthContextProvider from "./addMonthContext";
+import TotalActionsContext from "./totalActionsContext";
 import TotalMenuContextProvider from "./totalMenuContext";
 
 export type AppContextType = {
@@ -44,26 +41,23 @@ export type AppContextType = {
   setMessage: React.Dispatch<React.SetStateAction<string>>;
   severity: Severity;
   setSeverity: React.Dispatch<React.SetStateAction<Severity>>;
-  handleAction: (formData?: ExpenseData, customAction?: Action) => void;
+  handleAction: (
+    formData?: ExpenseData | undefined,
+    customAction?: Action | undefined,
+    sheetName?: string | undefined
+  ) => void;
   toggleDialog: (newOpen: boolean) => void;
   isFetchLoading: boolean;
   setIsFetchLoading: React.Dispatch<React.SetStateAction<boolean>>;
   total: number[];
   setTotal: React.Dispatch<React.SetStateAction<number[]>>;
   swiperHandlers: SwipeableHandlers;
-  handleCarryForwardAction: (
-    customAction: Action,
-    formData?: ExpenseData | undefined
-  ) => void;
-  handleTotalActions: (action: TotalActions, formData: ExpenseData) => void;
 };
 
 export type ExpenseData = {
   title: string;
   expense: string;
 };
-
-export type TotalActions = "Paid" | "Received" | "Carry forward";
 
 export const AppContext = createContext<AppContextType | null>(null);
 
@@ -167,20 +161,21 @@ const AppContextProvider = (
               setOpenAlert(true);
               setMessage("Expense Created");
               setSeverity("success");
-              let newData: Sheet[] | null = null;
-              newData =
-                data &&
-                data.map((sheet) => {
-                  if (sheet.id === resSheetName) {
-                    sheet.data.push({
-                      Title: formData.title,
-                      Expense: formData.expense,
-                      CreatedAt: new Date().toLocaleString(),
-                    });
-                  }
-                  return sheet;
-                });
-              setData(newData);
+              setData((prevData) => {
+                return (
+                  prevData &&
+                  prevData.map((sheet) => {
+                    if (sheet.id === resSheetName) {
+                      sheet.data.push({
+                        Title: formData.title,
+                        Expense: formData.expense,
+                        CreatedAt: new Date().toLocaleString(),
+                      });
+                    }
+                    return sheet;
+                  })
+                );
+              });
               toggleDrawer(false);
             })
             .catch(() => {
@@ -221,21 +216,22 @@ const AppContextProvider = (
               setOpenAlert(true);
               setMessage("Expense Updated");
               setSeverity("success");
-              let newData: Sheet[] | null = null;
-              newData =
-                data &&
-                data.map((sheet) => {
-                  if (sheet.id === resSheetName) {
-                    sheet.data[expenseIdx] = {
-                      ...sheet.data[expenseIdx],
-                      Title: formData.title,
-                      Expense: formData.expense,
-                      UpdatedAt: new Date().toLocaleDateString(),
-                    };
-                  }
-                  return sheet;
-                });
-              setData(newData);
+              setData((prevData) => {
+                return (
+                  prevData &&
+                  prevData.map((sheet) => {
+                    if (sheet.id === resSheetName) {
+                      sheet.data[expenseIdx] = {
+                        ...sheet.data[expenseIdx],
+                        Title: formData.title,
+                        Expense: formData.expense,
+                        UpdatedAt: new Date().toLocaleDateString(),
+                      };
+                    }
+                    return sheet;
+                  })
+                );
+              });
               toggleDrawer(false);
             })
             .catch(() => {
@@ -273,16 +269,17 @@ const AppContextProvider = (
               setOpenAlert(true);
               setMessage("Expense Deleted");
               setSeverity("success");
-              let newData: Sheet[] | null = null;
-              newData =
-                data &&
-                data.map((sheet) => {
-                  if (sheet.id === resSheetName) {
-                    sheet.data.splice(expenseIdx, 1);
-                  }
-                  return sheet;
-                });
-              setData(newData);
+              setData((prevData) => {
+                return (
+                  prevData &&
+                  prevData.map((sheet) => {
+                    if (sheet.id === resSheetName) {
+                      sheet.data.splice(expenseIdx, 1);
+                    }
+                    return sheet;
+                  })
+                );
+              });
             })
             .catch(() => {
               setOpenAlert(true);
@@ -308,133 +305,11 @@ const AppContextProvider = (
       setMessage,
       setSeverity,
       setIsDrawerFormSubmitBtnLoading,
-      data,
       setIsFetchLoading,
       setData,
       expenseIdx,
       toggleDrawer,
       toggleDialog,
-    ]
-  );
-
-  const handleTotalActions = useCallback(
-    (action: TotalActions, formData: ExpenseData) => {
-      setIsFetchLoading(true);
-
-      const sheetName = monthYears
-        ? monthYears[selectedMonthYear].replace(" ", "-")
-        : "";
-
-      fetch(serverRowUrl, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          ...formData,
-          resSheetName: sheetName,
-        }),
-      })
-        .then((resData) => {
-          if (resData.status !== 201) throw new Error("Something went wrong");
-          setOpenAlert(true);
-          setMessage(`${action} expense added`);
-          setSeverity("success");
-
-          setData((prevData) => {
-            if (!prevData) return null;
-            const newData: Sheet[] = [...prevData];
-            newData.map((sheet) => {
-              if (sheet.id === sheetName) {
-                sheet.data.push({
-                  Title: formData.title,
-                  Expense: formData.expense,
-                  CreatedAt: new Date().toLocaleDateString(),
-                });
-              }
-              return sheet;
-            });
-            return newData;
-          });
-        })
-        .catch(() => {
-          setOpenAlert(true);
-          setMessage("Something went wrong");
-          setSeverity("error");
-        })
-        .finally(() => {
-          setIsFetchLoading(false);
-        });
-    },
-    [
-      setIsFetchLoading,
-      setOpenAlert,
-      setMessage,
-      setSeverity,
-      setData,
-      monthYears,
-      selectedMonthYear,
-    ]
-  );
-
-  const handleCarryForwardAction = useCallback(
-    (customAction: Action, formData?: ExpenseData) => {
-      if (!formData || customAction !== "create") return;
-
-      setIsFetchLoading(true);
-
-      const sheetName = generateAddMonthSheetName(data || []);
-      fetch(serverRowUrl, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          ...formData,
-          resSheetName: sheetName,
-        }),
-      })
-        .then((resData) => {
-          if (resData.status !== 201) throw new Error("Something went wrong");
-          setOpenAlert(true);
-          setMessage("Carry forward expense added");
-          setSeverity("success");
-
-          setData((prevData) => {
-            if (!prevData) return null;
-            const newData: Sheet[] = [...prevData];
-            newData.push({ id: sheetName, data: [] });
-            newData[newData.length - 1].data.push({
-              Title: formData.title,
-              Expense: formData.expense,
-              CreatedAt: new Date().toLocaleDateString(),
-            });
-            return newData;
-          });
-          handleTotalActions("Carry forward", {
-            title: `Carry forwarded to ${sheetName.split("-")[0]}`,
-            expense: formData.expense.replace("-", ""),
-          });
-        })
-        .catch(() => {
-          setOpenAlert(true);
-          setMessage("Something went wrong");
-          setSeverity("error");
-        })
-        .finally(() => {
-          setIsFetchLoading(false);
-        });
-    },
-    [
-      setOpenAlert,
-      setMessage,
-      setSeverity,
-      setIsFetchLoading,
-      handleTotalActions,
-      setData,
-      data,
     ]
   );
 
@@ -483,14 +358,16 @@ const AppContextProvider = (
         setIsFetchLoading,
         setMessage,
         setSeverity,
-        handleCarryForwardAction,
-        handleTotalActions,
       }}
       {...props}
     >
       <PresetsContextProvider>
         <AddMonthContextProvider>
-          <TotalMenuContextProvider>{props.children}</TotalMenuContextProvider>
+          <TotalActionsContext>
+            <TotalMenuContextProvider>
+              {props.children}
+            </TotalMenuContextProvider>
+          </TotalActionsContext>
         </AddMonthContextProvider>
       </PresetsContextProvider>
     </AppContext.Provider>

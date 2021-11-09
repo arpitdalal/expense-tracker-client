@@ -11,7 +11,7 @@ import {
   ExpenseData,
 } from "../../context/appContext";
 
-type DataObject = {
+export type DataObject = {
   disabled: boolean;
   ShouldAddToNextMonth: string;
 };

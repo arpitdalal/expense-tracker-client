@@ -8,6 +8,10 @@ import {
 
 import { AppContext, AppContextType } from "./appContext";
 import { getLastMonthInData, LastMonthInData } from "../utils";
+import {
+  TotalActionsContext,
+  TotalActionsContextType,
+} from "./totalActionsContext";
 
 export type TotalMenuContextType = {
   shouldShow: boolean;
@@ -24,13 +28,12 @@ const TotalMenuContextProvider = (
 ) => {
   const [shouldShow, setShouldShow] = useState(false);
 
-  const {
-    data,
-    selectedMonthYear,
-    handleCarryForwardAction,
-    total,
-    handleTotalActions,
-  } = useContext(AppContext) as AppContextType;
+  const { data, selectedMonthYear, total } = useContext(
+    AppContext
+  ) as AppContextType;
+  const { handleTotalActions, handleCarryForwardAction } = useContext(
+    TotalActionsContext
+  ) as TotalActionsContextType;
 
   const handleCarryForwardClick = useCallback(() => {
     handleCarryForwardAction("create", {

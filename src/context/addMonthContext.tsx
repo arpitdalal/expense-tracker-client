@@ -1,6 +1,7 @@
 import { useContext, createContext, useCallback } from "react";
 
 import { AppContext, AppContextType, serverSheetUrl } from "./appContext";
+import { PresetsContext, PresetsContextType } from "./presetsContext";
 import { generateAddMonthSheetName } from "../utils";
 
 export type AddMonthContextType = {
@@ -13,13 +14,15 @@ const AddMonthContextProvider = (
   props: React.PropsWithChildren<React.ReactNode>
 ) => {
   const {
-    data,
+    data: appData,
     setIsFetchLoading,
     setOpenAlert,
     setMessage,
     setSeverity,
-    setData,
+    handleAction,
+    setData: setAppData,
   } = useContext(AppContext) as AppContextType;
+  const { data: presetData } = useContext(PresetsContext) as PresetsContextType;
 
   const handleAddMonthAction = useCallback(
     (sheetName: string) => {
@@ -40,9 +43,20 @@ const AddMonthContextProvider = (
           setOpenAlert(true);
           setMessage("Month Added");
           setSeverity("success");
-          setData(
+          setAppData(
             (prevData) => prevData && [...prevData, { id: sheetName, data: [] }]
           );
+          presetData &&
+            presetData.forEach((sheet) => {
+              sheet.data.forEach((row: any) => {
+                row.ShouldAddToNextMonth === "1" &&
+                  handleAction(
+                    { title: row.Title, expense: row.Expense },
+                    "create",
+                    sheetName
+                  );
+              });
+            });
         })
         .catch(() => {
           setOpenAlert(true);
@@ -53,15 +67,23 @@ const AddMonthContextProvider = (
           setIsFetchLoading(false);
         });
     },
-    [setOpenAlert, setMessage, setSeverity, setData, setIsFetchLoading]
+    [
+      setOpenAlert,
+      setMessage,
+      setSeverity,
+      setAppData,
+      setIsFetchLoading,
+      presetData,
+      handleAction,
+    ]
   );
 
   const handleAddMonth = useCallback(() => {
-    if (!data) return;
+    if (!appData) return;
 
-    const sheetName = generateAddMonthSheetName(data);
+    const sheetName = generateAddMonthSheetName(appData);
     handleAddMonthAction(sheetName);
-  }, [data, handleAddMonthAction]);
+  }, [appData, handleAddMonthAction]);
 
   return (
     <AddMonthContext.Provider value={{ handleAddMonth }} {...props}>
