@@ -19,7 +19,7 @@ const Presets = () => {
 
   return (
     <>
-      {loading && <AnimatedSkeleton />}
+      {loading && <AnimatedSkeleton type='Presets' />}
       {error && <ErrorAlert />}
       {data && !loading && !error && (
         <Box>

@@ -72,7 +72,7 @@ const Home = () => {
 
   return (
     <Box component='div' {...swiperHandlers}>
-      {loading && <AnimatedSkeleton />}
+      {loading && <AnimatedSkeleton type='Home' />}
       {error && <ErrorAlert />}
       {data && !loading && !error && (
         <>

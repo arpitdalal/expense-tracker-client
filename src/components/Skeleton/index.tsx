@@ -3,21 +3,38 @@ import { Box } from "@mui/system";
 
 import { useStyles } from "../../pages/Home";
 
-const AnimatedSkeleton = () => {
+type Props = {
+  type: "Home" | "Presets";
+};
+
+const AnimatedSkeleton = ({ type }: Props) => {
   const classes = useStyles();
 
   return (
     <>
-      <Skeleton animation='wave' height='50px' />
-      <Skeleton animation='wave' height='150px' width='320px' />
-      <Box className={classes.flexWrapper}>
-        <Skeleton animation='wave' height='150px' component='div' />
-        <Skeleton animation='wave' height='150px' component='div' />
-        <Skeleton animation='wave' height='150px' component='div' />
-        <Skeleton animation='wave' height='150px' component='div' />
-        <Skeleton animation='wave' height='150px' component='div' />
-        <Skeleton animation='wave' height='150px' component='div' />
-      </Box>
+      {type === "Home" ? (
+        <>
+          <Skeleton animation='wave' height='50px' />
+          <Skeleton animation='wave' height='150px' width='320px' />
+          <Box className={classes.flexWrapper}>
+            <Skeleton animation='wave' height='150px' component='div' />
+            <Skeleton animation='wave' height='150px' component='div' />
+            <Skeleton animation='wave' height='150px' component='div' />
+            <Skeleton animation='wave' height='150px' component='div' />
+            <Skeleton animation='wave' height='150px' component='div' />
+            <Skeleton animation='wave' height='150px' component='div' />
+          </Box>
+        </>
+      ) : (
+        <Box className={classes.flexWrapper}>
+          <Skeleton animation='wave' height='150px' component='div' />
+          <Skeleton animation='wave' height='150px' component='div' />
+          <Skeleton animation='wave' height='150px' component='div' />
+          <Skeleton animation='wave' height='150px' component='div' />
+          <Skeleton animation='wave' height='150px' component='div' />
+          <Skeleton animation='wave' height='150px' component='div' />
+        </Box>
+      )}
     </>
   );
 };
