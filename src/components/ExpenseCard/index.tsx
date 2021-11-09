@@ -101,7 +101,7 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
   }, [isAddPresetSet, setIsAddPresetSet, handlePresetsAction, title, expense]);
 
   return (
-    <Card sx={{ mb: "1rem" }}>
+    <Card>
       <CardContent>
         <Grid container justifyContent='space-between'>
           <Grid item>
