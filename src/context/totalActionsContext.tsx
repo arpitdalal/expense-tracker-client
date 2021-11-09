@@ -134,14 +134,17 @@ const TotalActionsContextProvider = (
             });
             return newData;
           });
+          const expense =
+            Number(formData.expense) > 0
+              ? `${-Number(formData.expense)}`
+              : `${-Number(formData.expense)}`;
           handleTotalActions("Carry forward", {
             title: `Carry forwarded to ${sheetName.split("-")[0]}`,
-            expense: formData.expense.replace("-", ""),
+            expense,
           });
           presetData &&
             presetData.forEach((sheet) => {
               sheet.data.forEach((row: any) => {
-                console.log(row);
                 row.ShouldAddToNextMonth === "1" &&
                   handleAction(
                     { title: row.Title, expense: row.Expense },
