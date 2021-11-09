@@ -1,4 +1,4 @@
-import { useState, useContext, useCallback, useEffect } from "react";
+import { useState, useContext, useCallback, useEffect, useRef } from "react";
 import { FormControlLabel, Switch as MuiSwitch } from "@mui/material";
 
 import {
@@ -26,23 +26,9 @@ const Switch = () => {
   ) as PresetsContextType;
   const { expenseIdx, expenseData } = useContext(AppContext) as AppContextType;
 
-  useEffect(() => {
-    if (!data) return;
-    setSelectedExpense(
-      data.map((sheet) => sheet.data[expenseIdx] as DataObject & ExpenseData)[0]
-    );
-  }, [expenseIdx, data, setSelectedExpense]);
-
-  useEffect(() => {
-    if (!selectedExpense) return;
-    if (expenseData.title === "" && expenseData.expense === "") {
-      setIsSwitchSelected(false);
-      return;
-    }
-    selectedExpense.ShouldAddToNextMonth === "1"
-      ? setIsSwitchSelected(true)
-      : setIsSwitchSelected(false);
-  }, [selectedExpense, setIsSwitchSelected, expenseData]);
+  const shouldSwitchBeSelected = useRef(
+    expenseData.title === "" && expenseData.expense === ""
+  );
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,6 +36,23 @@ const Switch = () => {
     },
     [setIsSwitchSelected]
   );
+
+  useEffect(() => {
+    if (!data) return;
+    setSelectedExpense(
+      data.map((sheet) => sheet.data[expenseIdx] as DataObject & ExpenseData)[0]
+    );
+  }, [expenseIdx, data, setSelectedExpense]);
+  useEffect(() => {
+    if (!selectedExpense) return;
+    if (shouldSwitchBeSelected.current) {
+      setIsSwitchSelected(false);
+      return;
+    }
+    selectedExpense.ShouldAddToNextMonth === "1"
+      ? setIsSwitchSelected(true)
+      : setIsSwitchSelected(false);
+  }, [selectedExpense, setIsSwitchSelected]);
 
   return (
     <FormControlLabel
