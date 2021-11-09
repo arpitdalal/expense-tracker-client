@@ -10,6 +10,7 @@ import AppContextProvider from "./context/appContext";
 import Home from "./pages/Home";
 import Presets from "./pages/Presets";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import ServiceWorkerWrapper from "./components/ServiceWorkerWrapper";
 
 ReactDOM.render(
@@ -29,6 +30,7 @@ ReactDOM.render(
                 <Presets />
               </Route>
             </Switch>
+            <Footer />
           </Container>
           <App />
           <ServiceWorkerWrapper />
