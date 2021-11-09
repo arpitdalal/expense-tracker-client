@@ -24,7 +24,7 @@ const Switch = () => {
   const { data, isSwitchSelected, setIsSwitchSelected } = useContext(
     PresetsContext
   ) as PresetsContextType;
-  const { expenseIdx } = useContext(AppContext) as AppContextType;
+  const { expenseIdx, expenseData } = useContext(AppContext) as AppContextType;
 
   useEffect(() => {
     if (!data) return;
@@ -35,10 +35,14 @@ const Switch = () => {
 
   useEffect(() => {
     if (!selectedExpense) return;
+    if (expenseData.title === "" && expenseData.expense === "") {
+      setIsSwitchSelected(false);
+      return;
+    }
     selectedExpense.ShouldAddToNextMonth === "1"
       ? setIsSwitchSelected(true)
       : setIsSwitchSelected(false);
-  }, [selectedExpense, setIsSwitchSelected]);
+  }, [selectedExpense, setIsSwitchSelected, expenseData]);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
