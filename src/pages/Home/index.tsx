@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { Box } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 
@@ -23,6 +23,9 @@ export const useStyles = makeStyles(() =>
 );
 
 const Home = () => {
+  const [shouldAddNextBtnShow, setShouldAddNextBtnShow] =
+    useState<boolean>(false);
+
   const {
     selectedMonthYear,
     setSelectedMonthYear,
@@ -51,6 +54,21 @@ const Home = () => {
     setMonthYears(dataMonthYears);
     setSelectedMonthYear(dataMonthYears.length - 1);
   }, [data, setMonthYears, setSelectedMonthYear, setTotal]);
+  useEffect(() => {
+    if (!data || data.length <= 0) return;
+    const currentMonth = new Date().toLocaleString("en-us", {
+      month: "short",
+    });
+    const lastMonth = data[data.length - 1].id.split("-")[0];
+    if (currentMonth === lastMonth) {
+      const currentDate = new Date().getDate();
+      if (currentDate > 23) {
+        setShouldAddNextBtnShow(true);
+      }
+    } else {
+      setShouldAddNextBtnShow(false);
+    }
+  }, [data, setShouldAddNextBtnShow]);
 
   return (
     <Box component='div' {...swiperHandlers}>
@@ -59,9 +77,11 @@ const Home = () => {
       {data && !loading && !error && (
         <>
           <Carousel>{monthYears && monthYears[selectedMonthYear]}</Carousel>
-          <Box textAlign='right' mt='1rem'>
-            <AddMonthBtn />
-          </Box>
+          {shouldAddNextBtnShow && (
+            <Box textAlign='right' mt='1rem'>
+              <AddMonthBtn />
+            </Box>
+          )}
           <Total />
           <Box>
             <Box marginTop='2rem' className={classes.flexWrapper}>
