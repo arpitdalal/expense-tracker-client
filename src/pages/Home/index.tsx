@@ -36,6 +36,7 @@ const Home = () => {
     error,
     setTotal,
     swiperHandlers,
+    total,
   } = useContext(AppContext) as AppContextType;
 
   const classes = useStyles();
@@ -62,13 +63,13 @@ const Home = () => {
     const lastMonth = data[data.length - 1].id.split("-")[0];
     if (currentMonth === lastMonth) {
       const currentDate = new Date().getDate();
-      if (currentDate > 23) {
+      if (currentDate > 23 && total[data.length - 1] === 0) {
         setShouldAddNextBtnShow(true);
       }
     } else {
       setShouldAddNextBtnShow(false);
     }
-  }, [data, setShouldAddNextBtnShow]);
+  }, [data, setShouldAddNextBtnShow, total]);
 
   return (
     <Box component='div' {...swiperHandlers}>
