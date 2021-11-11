@@ -10,6 +10,7 @@ import PresetsContextProvider from "./presetsContext";
 import AddMonthContextProvider from "./addMonthContext";
 import TotalActionsContext from "./totalActionsContext";
 import TotalMenuContextProvider from "./totalMenuContext";
+import DialogBoxContextProvider from "./dialogBoxContext";
 
 export type AppContextType = {
   selectedMonthYear: number;
@@ -365,7 +366,9 @@ const AppContextProvider = (
         <AddMonthContextProvider>
           <TotalActionsContext>
             <TotalMenuContextProvider>
-              {props.children}
+              <DialogBoxContextProvider>
+                {props.children}
+              </DialogBoxContextProvider>
             </TotalMenuContextProvider>
           </TotalActionsContext>
         </AddMonthContextProvider>

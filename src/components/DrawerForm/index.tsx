@@ -1,8 +1,8 @@
 import { useState, useContext, useCallback, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { TextField, Typography, Box } from "@mui/material";
+import { TextField, Typography, Box, IconButton } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { Send } from "@mui/icons-material";
+import { HelpRounded, Send } from "@mui/icons-material";
 import { Sheet } from "use-google-sheets/dist/types";
 
 import {
@@ -16,6 +16,11 @@ import {
 } from "../../context/presetsContext";
 import Presets from "../Presets";
 import Switch from "../Switch";
+import {
+  DialogBoxContext,
+  DialogBoxContextType,
+} from "../../context/dialogBoxContext";
+import DialogBox from "../DialogBox";
 
 export type Action = "update" | "create" | "delete" | "";
 export type PresetAction = "remove" | "add";
@@ -42,6 +47,7 @@ const DrawerForm = () => {
   const { data, handlePresetsAction, setData } = useContext(
     PresetsContext
   ) as PresetsContextType;
+  const { setOpen } = useContext(DialogBoxContext) as DialogBoxContextType;
 
   const btnTextBool = useRef(
     expenseData.title !== "" && expenseData.expense !== ""
@@ -117,6 +123,10 @@ const DrawerForm = () => {
     [setFormData, formData, setData, data]
   );
 
+  const openDialogBox = useCallback(() => {
+    setOpen(true);
+  }, [setOpen]);
+
   useEffect(() => {
     btnTextBool.current && setBtnText("Update");
   }, [btnTextBool]);
@@ -164,6 +174,10 @@ const DrawerForm = () => {
         {isPresetsPage && (
           <Box component='div'>
             <Switch />
+            <IconButton onClick={openDialogBox} sx={{ padding: "0" }}>
+              <HelpRounded />
+            </IconButton>
+            <DialogBox content='If this is checked, this preset will be automatically added to new months.' />
           </Box>
         )}
         <Box component='div'>

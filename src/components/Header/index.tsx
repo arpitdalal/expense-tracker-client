@@ -20,7 +20,7 @@ const Header = () => {
           underline={location && location.pathname === "/" ? "always" : "none"}
           variant='body1'
         >
-          Home
+          Expenses
         </Link>
         <Link
           component={RouterLink}

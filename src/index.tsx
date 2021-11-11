@@ -7,7 +7,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import App from "./App";
 import theme from "./hooks/useStyles";
 import AppContextProvider from "./context/appContext";
-import Home from "./pages/Home";
+import Expenses from "./pages/Expenses";
 import Presets from "./pages/Presets";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -24,7 +24,7 @@ ReactDOM.render(
 
             <Switch>
               <Route exact path='/'>
-                <Home />
+                <Expenses />
               </Route>
               <Route path='/presets'>
                 <Presets />

@@ -5,7 +5,7 @@ import {
   PresetsContextType,
   PresetsContext,
 } from "../../context/presetsContext";
-import { useStyles } from "../Home";
+import { useStyles } from "../Expenses";
 import AnimatedSkeleton from "../../components/Skeleton";
 import ErrorAlert from "../../components/ErrorAlert";
 import ExpenseCard from "../../components/ExpenseCard";

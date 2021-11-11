@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 
 import { AppContext, AppContextType } from "./context/appContext";
 import CircularPageLoading from "./components/CircularPageLoading";
-import DialogBox from "./components/DialogBox";
+import DeleteDialogBox from "./components/DeleteDialogBox";
 import Drawer from "./components/Drawer";
 import SnackBarAlert from "./components/SnackBarAlert";
 import AnimatedFab from "./components/AnimatedFab";
@@ -29,7 +29,7 @@ const App = () => {
   return (
     <>
       {isFetchLoading && <CircularPageLoading />}
-      {action === "delete" ? <DialogBox /> : <Drawer />}
+      {action === "delete" ? <DeleteDialogBox /> : <Drawer />}
 
       {severity && message !== "" && <SnackBarAlert />}
 

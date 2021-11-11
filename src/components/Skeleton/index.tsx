@@ -1,10 +1,10 @@
 import { Skeleton } from "@mui/material";
 import { Box } from "@mui/system";
 
-import { useStyles } from "../../pages/Home";
+import { useStyles } from "../../pages/Expenses";
 
 type Props = {
-  type: "Home" | "Presets";
+  type: "Expenses" | "Presets";
 };
 
 const AnimatedSkeleton = ({ type }: Props) => {
@@ -12,7 +12,7 @@ const AnimatedSkeleton = ({ type }: Props) => {
 
   return (
     <>
-      {type === "Home" ? (
+      {type === "Expenses" ? (
         <>
           <Skeleton animation='wave' height='50px' />
           <Skeleton animation='wave' height='150px' width='320px' />

@@ -1,55 +1,41 @@
-import { useContext, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useContext } from "react";
 import {
+  Button,
   Dialog,
   DialogActions,
+  DialogContent,
+  DialogContentText,
   DialogTitle,
-  Button,
-  Typography,
 } from "@mui/material";
-import { AppContext, AppContextType } from "../../context/appContext";
+
 import {
-  PresetsContext,
-  PresetsContextType,
-} from "../../context/presetsContext";
+  DialogBoxContext,
+  DialogBoxContextType,
+} from "../../context/dialogBoxContext";
 
-const DialogBox = () => {
-  const { toggleDialog, handleAction, openDialog } = useContext(
-    AppContext
-  ) as AppContextType;
-  const { handlePresetsAction } = useContext(
-    PresetsContext
-  ) as PresetsContextType;
+type Props = {
+  title?: string;
+  content: string;
+};
 
-  const { pathname } = useLocation();
-
-  const handleDialogClose = useCallback(() => {
-    toggleDialog(false);
-  }, [toggleDialog]);
-
-  const handleDialogYesClick = useCallback(() => {
-    pathname.includes("presets") ? handlePresetsAction() : handleAction();
-    toggleDialog(false);
-  }, [handleAction, handlePresetsAction, toggleDialog, pathname]);
+const DialogBox = ({ title, content }: Props) => {
+  const { open, handleClose } = useContext(
+    DialogBoxContext
+  ) as DialogBoxContextType;
 
   return (
     <Dialog
-      open={openDialog}
-      onClose={handleDialogClose}
-      aria-labelledby='responsive-dialog-title'
+      open={open}
+      keepMounted
+      onClose={handleClose}
+      aria-describedby='dialog-box'
     >
-      <DialogTitle id='responsive-dialog-title'>
-        Are you sure you want to{" "}
-        <Typography component='span' color='error'>
-          delete
-        </Typography>{" "}
-        this {!pathname.includes("presets") ? "expense" : "preset"}?
-      </DialogTitle>
+      {title && <DialogTitle>{title}</DialogTitle>}
+      <DialogContent>
+        <DialogContentText id='dialog-box'>{content}</DialogContentText>
+      </DialogContent>
       <DialogActions>
-        <Button onClick={handleDialogClose} autoFocus>
-          No
-        </Button>
-        <Button onClick={handleDialogYesClick}>Yes</Button>
+        <Button onClick={handleClose}>Okay</Button>
       </DialogActions>
     </Dialog>
   );
