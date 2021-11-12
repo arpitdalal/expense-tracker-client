@@ -37,7 +37,7 @@ const TotalMenuContextProvider = (
 
   const handleCarryForwardClick = useCallback(() => {
     handleCarryForwardAction("create", {
-      title: `Carry forward from ${
+      title: `Amount forward from ${
         data && data[selectedMonthYear].id.split("-")[0]
       }`,
       expense: String(total[selectedMonthYear]),

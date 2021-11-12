@@ -139,7 +139,7 @@ const TotalActionsContextProvider = (
               ? `${-Number(formData.expense)}`
               : `${-Number(formData.expense)}`;
           handleTotalActions("Carry forward", {
-            title: `Carry forwarded to ${sheetName.split("-")[0]}`,
+            title: `Amount forwarded to ${sheetName.split("-")[0]}`,
             expense,
           });
           presetData &&
