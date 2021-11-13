@@ -104,7 +104,7 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
     <Card>
       <CardContent>
         <Grid container justifyContent='space-between'>
-          <Grid item>
+          <Grid item sx={{ maxWidth: "85%" }}>
             <Typography variant='h5' component='div'>
               {title}
             </Typography>
