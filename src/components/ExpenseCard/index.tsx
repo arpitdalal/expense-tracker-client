@@ -15,6 +15,7 @@ import {
 import {
   Card,
   CardContent,
+  Divider,
   Grid,
   IconButton,
   Menu,
@@ -153,6 +154,7 @@ const ExpenseCard = ({ title, expense, idx }: Props) => {
                   Edit
                 </Typography>
               </MenuItem>
+              <Divider />
               <MenuItem
                 onClick={() => {
                   handleDeleteClick(true);
