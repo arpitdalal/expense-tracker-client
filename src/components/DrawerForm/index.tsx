@@ -39,19 +39,26 @@ const DrawerForm = () => {
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(false);
 
   const {
+    data: appData,
+    expenseIdx,
+    selectedMonthYear,
     setExpenseData,
     expenseData,
     isDrawerFormSubmitBtnLoading,
     handleAction,
   } = useContext(AppContext) as AppContextType;
-  const { data, handlePresetsAction, setData } = useContext(
-    PresetsContext
-  ) as PresetsContextType;
+  const {
+    data: presetData,
+    handlePresetsAction,
+    setData,
+  } = useContext(PresetsContext) as PresetsContextType;
   const { setOpen } = useContext(DialogBoxContext) as DialogBoxContextType;
 
-  const btnTextBool = useRef(
+  const isFormUpdate = useRef(
     expenseData.title !== "" && expenseData.expense !== ""
   );
+  const createdAt = useRef(new Date().toLocaleDateString());
+  const updatedAt = useRef("");
 
   const { pathname } = useLocation();
 
@@ -97,8 +104,8 @@ const DrawerForm = () => {
       let newData: Sheet[] | null = null;
       if (action === "add") {
         newData =
-          data &&
-          data.map((sheet) => {
+          presetData &&
+          presetData.map((sheet) => {
             let newSheet = sheet;
             newSheet.data.map((expense: any, id) => {
               if (id !== idx) expense.disabled = true;
@@ -108,8 +115,8 @@ const DrawerForm = () => {
           });
       } else {
         newData =
-          data &&
-          data.map((sheet) => {
+          presetData &&
+          presetData.map((sheet) => {
             let newSheet = sheet;
             newSheet.data.map((expense: any) => {
               expense.disabled = false;
@@ -120,7 +127,7 @@ const DrawerForm = () => {
       }
       newData && setData(newData);
     },
-    [setFormData, formData, setData, data]
+    [setFormData, formData, setData, presetData]
   );
 
   const openDialogBox = useCallback(() => {
@@ -128,8 +135,8 @@ const DrawerForm = () => {
   }, [setOpen]);
 
   useEffect(() => {
-    btnTextBool.current && setBtnText("Update");
-  }, [btnTextBool]);
+    isFormUpdate.current && setBtnText("Update");
+  }, [isFormUpdate]);
 
   useEffect(() => {
     if (formData.title === "" || formData.expense === "") {
@@ -142,6 +149,20 @@ const DrawerForm = () => {
   useEffect(() => {
     setFormData(expenseData);
   }, [expenseData]);
+
+  useEffect(() => {
+    if (!isFormUpdate.current) return;
+    const myData =
+      appData && (appData[selectedMonthYear].data[expenseIdx] as any);
+    createdAt.current = myData.CreatedAt;
+  }, [appData, expenseIdx, selectedMonthYear, isFormUpdate]);
+
+  useEffect(() => {
+    if (!isFormUpdate.current) return;
+    const myData =
+      appData && (appData[selectedMonthYear].data[expenseIdx] as any);
+    myData.UpdatedAt && (updatedAt.current = myData.UpdatedAt);
+  }, [appData, expenseIdx, selectedMonthYear, isFormUpdate]);
 
   return (
     <>
@@ -193,6 +214,14 @@ const DrawerForm = () => {
             {btnText}
           </LoadingButton>
         </Box>
+      </Box>
+      <Box component='div'>
+        <Typography variant='body2'>Created on: {createdAt.current}</Typography>
+        {updatedAt.current !== "" && (
+          <Typography variant='body2'>
+            Updated on: {updatedAt.current}
+          </Typography>
+        )}
       </Box>
     </>
   );
